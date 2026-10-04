@@ -30,16 +30,16 @@ jobs:
         run: |
           npm install
 
-      - name: Run verification tests
-        run: |
-          npm test
-
       - name: Build static site
         env:
           ASTRO_SITE: https://choysang.github.io
-          ASTRO_BASE: /howtolivebetter/
+          ASTRO_BASE: /howtolivebetter
         run: |
           npm run build
+
+      - name: Run verification tests
+        run: |
+          npm test
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
