@@ -72,7 +72,9 @@ export default function GlobalShortcutsOverlay() {
 
       if (result.matchedRoute) {
         e.preventDefault()
-        window.location.href = result.matchedRoute
+        const base = (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL ? import.meta.env.BASE_URL : '/').replace(/\/$/, '')
+        const target = result.matchedRoute.startsWith('/') ? `${base}${result.matchedRoute}` : result.matchedRoute
+        window.location.href = target
         return
       }
 

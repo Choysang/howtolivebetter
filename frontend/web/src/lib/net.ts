@@ -39,8 +39,13 @@ export async function safeFetchKb<T>(path: string): Promise<T> {
     return kbCache.get(path) as T
   }
 
-  // 4. 纯客户端只读 GET 请求，不携带凭证与外部参数
-  const response = await fetch(path, {
+  // 4. 纯客户端只读 GET 请求，不携带凭证与外部参数（自适应子路径部署如 GitHub Pages）
+  const base = (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL
+    ? import.meta.env.BASE_URL
+    : '/').replace(/\/$/, '')
+  const fetchUrl = `${base}${path.startsWith('/') ? path : '/' + path}`
+
+  const response = await fetch(fetchUrl, {
     method: 'GET',
     credentials: 'omit',
     headers: {

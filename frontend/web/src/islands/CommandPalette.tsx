@@ -138,7 +138,11 @@ export default function CommandPalette() {
 
   const handleSelect = (item: SearchItem) => {
     setIsOpen(false)
-    if (item.url) window.location.href = item.url
+    if (item.url) {
+      const base = (typeof import.meta !== 'undefined' && import.meta.env?.BASE_URL ? import.meta.env.BASE_URL : '/').replace(/\/$/, '')
+      const target = item.url.startsWith('/') ? `${base}${item.url}` : item.url
+      window.location.href = target
+    }
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

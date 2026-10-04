@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+---
+
+<BaseLayout title="404 - 页面未找到 · 高性价比人生指南" description="页面未找到，带你重返高性价比人生决策坐标系。">
+  <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4 py-16">
+    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#d5ed9e] text-[#12382d] shadow-xs mb-6">
+      <span class="inline-block w-2 h-2 rounded-full bg-[#12382d] animate-pulse"></span>
+      <span>404 NOT FOUND · 坐标偏离</span>
+    </div>
+
+    <h1 class="text-3xl sm:text-5xl font-serif font-extrabold text-gray-900 dark:text-gray-100 tracking-tight mb-4">
+      你探索的坐标暂时不在星图上
+    </h1>
+
+    <p class="text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-lg mb-8 leading-relaxed">
+      生活总有计划外的岔路。原书 654 条建议始终在罗盘中，带你重返当下最有用的高杠杆决断。
+    </p>
+
+    <div class="flex flex-wrap items-center justify-center gap-3">
+      <a
+        href="/"
+        class="life-btn life-btn-lime px-6 py-3 text-sm font-bold shadow-md"
+      >
+        <span>🧭 返回罗盘首页</span>
+      </a>
+
+      <a
+        href="/search/"
+        class="life-btn life-btn-deep px-5 py-3 text-sm font-semibold"
+      >
+        <span>🔍 检索 654 条建议</span>
+      </a>
+
+      <a
+        href="/stage/early/"
+        class="life-btn life-btn-outline px-5 py-3 text-sm font-semibold"
+      >
+        <span>💼 阶段决策手册</span>
+      </a>
+    </div>
+  </div>
+
+  <script is:inline>
+    // 智能子路径自愈：如果当前在 GitHub Pages 域名下且路径缺失仓库名前缀，自动校正重定向
+    if (window.location.hostname.endsWith('github.io') && !window.location.pathname.startsWith('/howtolivebetter/')) {
+      const correctedPath = '/howtolivebetter' + window.location.pathname + window.location.search + window.location.hash;
+      window.location.replace(correctedPath);
+    }
+  </script>
+</BaseLayout>
