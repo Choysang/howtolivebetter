@@ -15,8 +15,7 @@ const navLinks = [
   { href: '/bingo/', label: '🎯 零元九宫格', match: '/bingo' },
   { href: '/top-50/', label: '⭐ 精选50', match: '/top-50' },
   { href: '/dashboard/', label: '📊 个人看板', match: '/dashboard' },
-  { href: '/tools/habits/', label: '🛠️ 工具箱', match: '/tools', hasDropdown: 'tools' },
-  { href: '/search/', label: '📖 654条检索', match: '/search' },
+  { href: '/tools/habits/', label: '🛠️ 更多工具', match: '/tools', hasDropdown: 'tools' },
 ]
 
 const stageItems = [
@@ -31,35 +30,35 @@ const toolItems = [
   { href: '/tools/constitution/', title: '📜 个人生活宪法', desc: '布鲁姆 L6 创造层，端侧生成 MY_CONSTITUTION.md' },
   { href: '/tools/habits/', title: '🌱 习惯工作台', desc: '追踪连续天数与热力网格，支持备份' },
   { href: '/tools/focus/', title: '⏳ 科学番茄钟', desc: '25m 专注 + 5m 循证护眼拉伸复位' },
-  { href: '/tools/agent/', title: '🤖 Agent 技能中心', desc: '多层路由分流，导出 Claude/Cursor Skill' },
-  { href: '/checkin/', title: '✅ 每日零成本打卡', desc: '从原书筛选出的 17 件免意志力科学小事' },
   { href: '/checkup/', title: '🩺 处境体检自测', desc: '17 题本地剪枝折叠无关条目' },
+  { href: '/tools/agent/', title: '🤖 Agent 技能中心', desc: '多层路由分流，导出 Claude/Cursor Skill' },
+  { href: '/search/', title: '📖 654条检索', desc: '全书 654 条建议全文索引与过滤' },
 ]
 ---
 
-<header class="sticky top-0 z-40 w-full backdrop-blur-md bg-white/90 dark:bg-[#0c100e]/90 border-b border-[#dce4d5] dark:border-[#1c352a] transition-colors">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
-    {/* 品牌标识：41px 矩形牌 + Living Compass 动效 */}
-    <div class="flex items-center gap-3">
-      <a href="/" class="life-brand-mark flex-shrink-0" title="返回首页 / 理念总览">
+<header class="sticky top-0 z-40 w-full backdrop-blur-md bg-white/95 dark:bg-[#0c100e]/95 border-b border-[#dce4d5] dark:border-[#1c352a] transition-colors">
+  <div class="max-w-7xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between gap-2 sm:gap-4">
+    {/* 品牌标识：41px 矩形牌 + Living Compass 动效（超大屏展开，中大屏紧凑，绝对杜绝挤压） */}
+    <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+      <a href="/" class="life-brand-mark shrink-0" title="返回首页 / 理念总览">
         <span>H</span>
         <span class="life-asterisk">✳</span>
       </a>
-      <a href="/" class="hidden sm:flex items-center" transition:persist="living-compass-logo">
+      <a href="/" class="hidden xl:flex items-center shrink-0" transition:persist="living-compass-logo">
         <LivingLogo client:idle />
       </a>
     </div>
 
-    {/* 核心导航 */}
-    <nav class="hidden lg:flex items-center gap-1">
+    {/* 核心导航：严格单行不换行，间距自适应收敛 */}
+    <nav class="hidden lg:flex items-center gap-1 xl:gap-1.5 flex-nowrap shrink-0 overflow-visible">
       {navLinks.map((link) => {
         const isActive = currentPath.startsWith(link.match)
         if (link.hasDropdown === 'stage') {
           return (
-            <div class="relative group">
+            <div class="relative group shrink-0">
               <a
                 href={link.href}
-                class={`life-nav-link ${isActive ? 'active' : ''}`}
+                class={`life-nav-link whitespace-nowrap shrink-0 ${isActive ? 'active' : ''}`}
               >
                 <span>{link.label}</span>
                 <span class="text-[10px] ml-0.5 opacity-60 group-hover:rotate-180 transition-transform">▾</span>
@@ -90,16 +89,16 @@ const toolItems = [
         }
         if (link.hasDropdown === 'tools') {
           return (
-            <div class="relative group">
+            <div class="relative group shrink-0">
               <a
                 href={link.href}
-                class={`life-nav-link ${isActive ? 'active' : ''}`}
+                class={`life-nav-link whitespace-nowrap shrink-0 ${isActive ? 'active' : ''}`}
               >
                 <span>{link.label}</span>
                 <span class="text-[10px] ml-0.5 opacity-60 group-hover:rotate-180 transition-transform">▾</span>
               </a>
               {/* 下拉面板 */}
-              <div class="absolute left-0 top-full pt-1.5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
+              <div class="absolute right-0 top-full pt-1.5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
                 <div class="w-72 p-2 bg-white dark:bg-[#131b17] rounded-2xl border border-[#dce4d5] dark:border-[#1c352a] shadow-xl space-y-1">
                   <div class="px-2.5 py-1 text-[10px] font-semibold text-emerald-800 dark:text-emerald-400 uppercase tracking-wider">
                     循证落地工具箱
@@ -125,7 +124,7 @@ const toolItems = [
         return (
           <a
             href={link.href}
-            class={`life-nav-link ${isActive ? 'active' : ''}`}
+            class={`life-nav-link whitespace-nowrap shrink-0 ${isActive ? 'active' : ''}`}
           >
             {link.label}
           </a>
@@ -133,8 +132,8 @@ const toolItems = [
       })}
     </nav>
 
-    {/* 右侧交互区 */}
-    <div class="flex items-center gap-2">
+    {/* 右侧交互区：紧凑收敛，绝不挤压 */}
+    <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
       {/* 原生程序化微音效开关 */}
       <SoundToggle client:load />
 
@@ -142,20 +141,18 @@ const toolItems = [
       <button
         type="button"
         onclick="window.dispatchEvent(new CustomEvent('open-command-palette'))"
-        class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#edece1]/60 dark:bg-[#17231e] text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white border border-[#dce4d5] dark:border-[#1c352a] text-xs transition-colors"
+        class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#edece1]/60 dark:bg-[#17231e] text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white border border-[#dce4d5] dark:border-[#1c352a] text-xs transition-colors whitespace-nowrap shrink-0"
         title="按 Cmd+K 全局快速检索"
       >
         <span>🔍 检索建议</span>
-        <div class="flex items-center gap-1 font-mono text-[10px] text-gray-400">
-          <kbd class="px-1.5 py-0.5 rounded bg-white dark:bg-black border border-gray-300 dark:border-gray-700">⌘K</kbd>
-        </div>
+        <kbd class="px-1.5 py-0.5 rounded bg-white dark:bg-black border border-gray-300 dark:border-gray-700 font-mono text-[10px] text-gray-400">⌘K</kbd>
       </button>
 
       {/* 搜索小图标（移动端） */}
       <button
         type="button"
         onclick="window.dispatchEvent(new CustomEvent('open-command-palette'))"
-        class="sm:hidden p-2 rounded-full text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800"
+        class="sm:hidden p-2 rounded-full text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 shrink-0"
         title="搜索"
       >
         🔍
@@ -165,7 +162,7 @@ const toolItems = [
       <button
         id="theme-toggle"
         type="button"
-        class="p-2 rounded-full text-gray-600 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        class="p-2 rounded-full text-gray-600 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors shrink-0"
         title="切换明暗主题"
       >
         <span class="dark:hidden">🌙</span>
@@ -174,12 +171,12 @@ const toolItems = [
     </div>
   </div>
 
-  {/* 移动端横向滑动导航 */}
-  <div class="lg:hidden flex items-center gap-1 overflow-x-auto px-4 py-2 border-t border-[#dce4d5] dark:border-[#1c352a] bg-[#f7f7f0]/80 dark:bg-[#0c100e]/80 no-scrollbar text-xs">
+  {/* 移动端横向自适应滑动导航：强制单行不折行 */}
+  <div class="lg:hidden flex items-center gap-1.5 overflow-x-auto px-4 py-2 border-t border-[#dce4d5] dark:border-[#1c352a] bg-[#f7f7f0]/95 dark:bg-[#0c100e]/95 no-scrollbar text-xs flex-nowrap">
     {navLinks.map((link) => (
       <a
         href={link.href}
-        class={`whitespace-nowrap px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${
+        class={`whitespace-nowrap shrink-0 px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${
           currentPath.startsWith(link.match)
             ? 'bg-[#d5ed9e] text-[#12382d] font-bold'
             : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200/50'

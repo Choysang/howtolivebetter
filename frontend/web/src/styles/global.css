@@ -632,15 +632,19 @@
   border-color: var(--htlb-moss);
 }
 
-/* 药丸导航项 */
+/* 药丸导航项：严格单行不折行、弹性自适应 */
 .life-nav-link {
   display: inline-flex;
   align-items: center;
-  padding: 0.35rem 0.75rem;
-  font-size: 0.88rem;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.84rem;
   font-weight: 500;
   color: var(--fg-muted);
   border-radius: 9999px;
+  white-space: nowrap !important;
+  text-wrap: nowrap;
+  flex-shrink: 0;
+  line-height: 1.25;
   transition: all 0.18s ease;
 }
 
