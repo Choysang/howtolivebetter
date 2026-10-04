@@ -3,15 +3,27 @@
 > **「世界以主题铺陈，生命按阶段决断。」**  
 > *以循证为度刺破噪音，在不可逆的时流中筑牢反脆弱。*
 
+<div align="center">
+
+[![Online Demo](https://img.shields.io/badge/🌐_立即在线体验-点击访问_GitHub_Pages-10B981?style=for-the-badge&logo=google-chrome&logoColor=white)](https://choysang.github.io/howtolivebetter/)
+[![GitHub Pages Deployment](https://img.shields.io/github/deployments/Choysang/howtolivebetter/github-pages?label=GitHub%20Pages%20状态&logo=github&style=for-the-badge)](https://choysang.github.io/howtolivebetter/)
+
 [![Node.js Version](https://img.shields.io/badge/Node.js-%E2%89%A524.0.0-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 [![Astro 5](https://img.shields.io/badge/Astro-5.x-BC52EE?logo=astro&logoColor=white)](https://astro.build/)
 [![React 19](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
 [![Tailwind CSS v4](https://img.shields.io/badge/TailwindCSS-v4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![Local--First Privacy](https://img.shields.io/badge/Privacy-100%25%20Local--First-10B981)](https://howtolivebetter.net)
 [![Tests Passing](https://img.shields.io/badge/Tests-96%2F96%20Pass-brightgreen)](ops/test/)
-[![Static Pages](https://img.shields.io/badge/Static%20Pages-717%20Pre--rendered-blue)](frontend/web/dist/)
+[![Static Pages](https://img.shields.io/badge/Static%20Pages-718%20Pre--rendered-blue)](frontend/web/dist/)
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Choysang/howtolivebetter)
 [![License](https://img.shields.io/badge/License-MIT%20%2F%20CC%20BY--NC%204.0-orange)](LICENSE)
+
+</div>
+
+> 🚀 **【公网免安装·瞬时体验】**  
+> 无需本地克隆或配置 Node 环境，直接点击进入已构建部署的官方体验站点：  
+> ### 👉 **[https://choysang.github.io/howtolivebetter/](https://choysang.github.io/howtolivebetter/)** 👈  
+> *（全站 100% 静态预渲染 + 纯本地离线优先，首屏毫秒级秒开，数据物理级零外发，支持手机与桌面端响应式自适应）*
 
 ---
 
@@ -127,6 +139,25 @@ gaoxingjiabirenshengzhinan/
 │   └── serve.ts        # 零依赖 HTTP 静态预览服务器
 └── data/               # 8 位 Crockford UID 注册表与 upstream.lock
 ```
+
+---
+
+## 🌐 线上体验直达地图 (Live Demo Sitemap)
+
+你可以随时点击下方链接，在公网直接感受全套功能：
+
+| 模块名称 | 线上体验地址 | 核心交互与特点 |
+| :--- | :--- | :--- |
+| 🧭 **罗盘首页** | [点击体验 ↗](https://choysang.github.io/howtolivebetter/) | 认知觉醒开场仪式 · 实体卡片甲板轮播 · 单行大标题 |
+| 💼 **刚工作阶段手册** | [点击体验 ↗](https://choysang.github.io/howtolivebetter/stage/early/) | 22-28 岁先做 5 件事 · 租房避坑 · 试用期劳动维权 |
+| ⚡ **被裁员救命剧本** | [点击体验 ↗](https://choysang.github.io/howtolivebetter/scenario/laid-off/) | 法定谈判红线倒计时 · 一键导出日历 · 事前验尸防线 |
+| 🎲 **每日微决断抽签** | [点击体验 ↗](https://choysang.github.io/howtolivebetter/daily/) | UTC+8 确定性哈希 · 3D 翻牌循证顶刊 · 晶体微音效 |
+| 🎯 **零元行动九宫格** | [点击体验 ↗](https://choysang.github.io/howtolivebetter/bingo/) | 3×3 极简生活打卡 · 达成 Bingo 触发凯旋音效与海报生成 |
+| ⭐ **精选 50 条高性价比行动** | [点击体验 ↗](https://choysang.github.io/howtolivebetter/top-50/) | 50 磁贴蜂窝图 · 完成度进度条 · 批量日历导出 |
+| 📊 **个人掌控力看板** | [点击体验 ↗](https://choysang.github.io/howtolivebetter/dashboard/) | 已做 1.0 / 待做 0.4 加权计算 · 五阶段完成率 · 全息备份 |
+| 📜 **个人生活宪法起草器** | [点击体验 ↗](https://choysang.github.io/howtolivebetter/tools/constitution/) | 布鲁姆 L6 立法层 · 导出 MY_CONSTITUTION.md · 箴言卡片 |
+| 🔍 **654 条建议全文索引** | [点击体验 ↗](https://choysang.github.io/howtolivebetter/search/) | 全文毫秒级纯端侧检索 · 证据等级过滤 · 危机干预拦截 |
+| 🤖 **AI 大模型纯文本接口** | [点击查看 ↗](https://choysang.github.io/howtolivebetter/llms.txt) | 面向 Cursor/Claude 的高密度机器可读知识语料 |
 
 ---
 
