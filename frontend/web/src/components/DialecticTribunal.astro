@@ -1,0 +1,192 @@
+---
+import type { Item } from '@contracts/kb.ts'
+import { MENTAL_MODELS } from '@kernel/cognitive.ts'
+
+interface Props {
+  item: Item
+}
+
+const { item } = Astro.props
+const dialectic = item.overlay?.dialectic
+const elasticity = item.overlay?.elasticity
+
+// 默认兜底透镜与反思
+const fallbackLenses = ['first-principles', 'opportunity-cost'] as const
+const activeLenses = dialectic?.lenses || fallbackLenses
+---
+
+<div class="space-y-6 pt-6 border-t border-gray-200/80 dark:border-gray-800">
+  <div class="flex items-center justify-between flex-wrap gap-2">
+    <div class="flex items-center gap-2">
+      <span class="text-xl">⚖️</span>
+      <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 font-serif">
+        辩证审判席 · 双向钢人与失效边界
+      </h3>
+    </div>
+    <span class="text-[11px] font-mono px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+      抗教条主义 · 科学可证伪性
+    </span>
+  </div>
+
+  {/* 1. 心智透镜徽章 */}
+  <div class="flex items-center gap-2 flex-wrap">
+    <span class="text-xs font-semibold text-gray-500">思维透镜：</span>
+    {activeLenses.map((lid) => {
+      const meta = (MENTAL_MODELS as any)[lid]
+      return (
+        <div class="group relative inline-flex">
+          <span class="px-2.5 py-1 rounded-xl text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-emerald-500 transition-colors cursor-help">
+            🔭 {meta?.name || lid}
+          </span>
+          {meta?.coreQuestion && (
+            <div class="absolute bottom-full left-0 mb-1.5 hidden group-hover:block z-30 w-64 p-2.5 rounded-xl bg-gray-900 text-white text-[11px] shadow-xl border border-gray-700 leading-relaxed pointer-events-none animate-fade-up">
+              <span class="text-emerald-400 font-bold">透镜提问：</span>
+              {meta.coreQuestion}
+            </div>
+          )}
+        </div>
+      )
+    })}
+  </div>
+
+  {/* 2. 双向钢人审判卡片（含中央逻辑天平中轴） */}
+  <div class="relative">
+    {/* 桌面端中央逻辑天平中轴线与 Logos 支点徽章 */}
+    <div class="hidden md:flex absolute inset-0 items-center justify-center pointer-events-none z-10">
+      <div class="h-full w-px bg-linear-to-b from-transparent via-emerald-500/30 dark:via-emerald-400/20 to-transparent"></div>
+      <div class="absolute top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-full bg-white dark:bg-[#151821] border border-gray-200/90 dark:border-gray-700/80 shadow-md text-[11px] font-mono font-bold text-gray-700 dark:text-gray-300 flex items-center gap-1 backdrop-blur-sm">
+        <span>⚖️</span>
+        <span class="tracking-widest">LOGOS</span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+      {/* 正方钢人 (Steelman Pro) */}
+      <div class="p-5 rounded-2xl border border-emerald-200 dark:border-emerald-850 bg-emerald-50/40 dark:bg-emerald-950/20 space-y-2 relative overflow-hidden">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5">
+            <span>🛡️ 正方最强立论 (Steelman Pro)</span>
+          </span>
+          <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">最高理论收益</span>
+        </div>
+        <h4 class="text-sm font-bold text-gray-900 dark:text-gray-100">
+          {dialectic?.pro?.thesis || `遵循证据评级 ${item.source.evidence}，在基准情境下具备明确正向期望值。`}
+        </h4>
+        <p class="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+          {dialectic?.pro?.rationale || (item.source.plain || item.source.benefit)}
+        </p>
+      </div>
+
+      {/* 反方钢人 (Steelman Con) */}
+      <div class="p-5 rounded-2xl border border-amber-200 dark:border-amber-850 bg-amber-50/40 dark:bg-amber-950/20 space-y-2 relative overflow-hidden">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-amber-800 dark:text-amber-300 flex items-center gap-1.5">
+            <span>⚔️ 反方最强辩驳 (Steelman Con)</span>
+          </span>
+          <span class="text-[10px] text-amber-600 dark:text-amber-400 font-semibold">拒绝稻草人论点</span>
+        </div>
+        <h4 class="text-sm font-bold text-gray-900 dark:text-gray-100">
+          {dialectic?.con?.thesis || '盲目照搬全称命题可能掩盖个体的机会成本与特定生理排斥。'}
+        </h4>
+        <p class="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+          {dialectic?.con?.rationale || '任何建议都有适用边界。脱离当前经济缓冲或身体耐受度强推，边际收益将递减甚至引发逆向反噬。'}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  {/* 3. 失效边界条件 */}
+  <div class="p-4 sm:p-5 rounded-2xl border border-gray-200 dark:border-gray-800 bg-gray-50/70 dark:bg-[#151820] space-y-2 text-xs">
+    <div class="flex items-center justify-between">
+      <span class="font-bold text-rose-600 dark:text-rose-400 flex items-center gap-1">
+        <span>⚠️ 失效边界与避雷提醒 (Failure Boundary)</span>
+      </span>
+      <span class="text-[10px] text-gray-400">何时应当停止执行</span>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+      <div>
+        <span class="text-gray-400 block mb-0.5">极端/失效条件：</span>
+        <span class="text-gray-800 dark:text-gray-200 font-medium">
+          {dialectic?.boundary?.condition || '身体处于重度感染急性期、连续严重失眠或手头零流动现金。'}
+        </span>
+      </div>
+      <div>
+        <span class="text-gray-400 block mb-0.5">强行执行后果：</span>
+        <span class="text-rose-700 dark:text-rose-300">
+          {dialectic?.boundary?.consequence || '过度消耗意志力，加剧焦虑，诱发破窗效应。'}
+        </span>
+      </div>
+      <div>
+        <span class="text-gray-400 block mb-0.5">替代保底策略：</span>
+        <span class="text-emerald-700 dark:text-emerald-300 font-medium">
+          {dialectic?.boundary?.remedy || '退守到保底微动作，优先补充睡眠与基础能量。'}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  {/* 4. 苏格拉底心智发问镜 */}
+  <details class="group p-4 rounded-2xl border border-gray-200/80 dark:border-gray-800 bg-white dark:bg-[#12151c] transition-all">
+    <summary class="flex items-center justify-between font-bold text-xs sm:text-sm text-gray-800 dark:text-gray-200 cursor-pointer list-none select-none">
+      <div class="flex items-center gap-2">
+        <span>🪞</span>
+        <span>苏格拉底反思镜：叩问你的内在假设</span>
+      </div>
+      <span class="text-gray-400 group-open:rotate-180 transition-transform text-xs">▾</span>
+    </summary>
+    <div class="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 space-y-2 text-xs leading-relaxed text-gray-600 dark:text-gray-300 font-serif">
+      <blockquote class="italic border-l-2 border-emerald-500 pl-3 my-1 text-sm font-sans text-gray-900 dark:text-gray-100">
+        "{dialectic?.socratic?.prompt || '你是经过理性权衡自愿选择这项建议，还是在逃避某种让你更不适的根本矛盾？'}"
+      </blockquote>
+      {dialectic?.socratic?.clarification && (
+        <p class="text-[11px] text-gray-500 font-sans">
+          💡 认知导引：{dialectic.socratic.clarification}
+        </p>
+      )}
+    </div>
+  </details>
+
+  {/* 5. 弹性地板微动作（如果已定义） */}
+  {elasticity && (
+    <div class="p-4 rounded-2xl border border-indigo-200 dark:border-indigo-900/60 bg-indigo-50/30 dark:bg-indigo-950/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+      <div>
+        <span class="font-bold text-indigo-700 dark:text-indigo-300 block mb-0.5">
+          🌱 弹性习惯双轨动作（抗内疚设计）：
+        </span>
+        <span class="text-gray-600 dark:text-gray-400">
+          状态绝佳做天花板：<strong class="text-gray-800 dark:text-gray-200">{elasticity.ceiling}</strong>
+        </span>
+      </div>
+      <div class="sm:text-right shrink-0">
+        <span class="px-2.5 py-1 rounded-lg bg-indigo-100 dark:bg-indigo-900/80 text-indigo-800 dark:text-indigo-200 font-bold inline-block">
+          【30秒保底地板】{elasticity.floor}
+        </span>
+      </div>
+    </div>
+  )}
+
+  {/* 6. 立宪枢纽：将辩证结论铸入个人生活宪法 (Bloom L6) */}
+  <div class="p-5 sm:p-6 rounded-2xl border border-emerald-300/70 dark:border-emerald-800/60 bg-linear-to-r from-emerald-50/70 via-amber-50/30 to-emerald-50/50 dark:from-emerald-950/30 dark:via-gray-900/40 dark:to-emerald-950/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div class="space-y-1">
+      <div class="flex items-center gap-2">
+        <span class="text-lg">📜</span>
+        <h4 class="text-sm font-bold text-gray-900 dark:text-gray-100 font-serif">
+          审判裁决：将本条辩证结论铸入个人生活宪法
+        </h4>
+        <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 font-semibold">
+          Bloom L6 创造层
+        </span>
+      </div>
+      <p class="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+        外部建议止于争议，行动始于立法。将本条的核心依据与弹性保底微动作，固化为你不可动摇的底线契约。
+      </p>
+    </div>
+    <a
+      href={`/tools/constitution/?addUid=${item.uid}&title=${encodeURIComponent(item.source?.title || item.title || '')}`}
+      class="shrink-0 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm shadow-sm transition-all tactile-press flex items-center gap-1.5 cursor-pointer"
+    >
+      <span>✍️ 写入我的生活宪法</span>
+      <span aria-hidden="true">&rarr;</span>
+    </a>
+  </div>
+</div>

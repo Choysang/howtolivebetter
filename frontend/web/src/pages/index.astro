@@ -1,0 +1,555 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { getStages, getScenarios, getChapters, getItemsMap, getManifest } from '../lib/kb.ts'
+import ItemCard from '../components/ItemCard.astro'
+import PhenomenonChips from '../components/PhenomenonChips.astro'
+import CognitiveAwakeningEntrance from '../islands/CognitiveAwakeningEntrance'
+import HeroCardDeck from '../islands/HeroCardDeck.tsx'
+import { MASTER_MAXIM } from '@contracts/awakening.ts'
+
+const stages = getStages()
+const scenarios = getScenarios()
+const chapters = getChapters()
+const itemsMap = getItemsMap()
+const manifest = getManifest()
+
+// 默认展示「刚工作 (early)」的先做 5 件
+const earlyStage = stages.find((s) => s.id === 'early') ?? stages[0]
+const earlyPicks = earlyStage.picks.map((uid) => itemsMap.get(uid)!).filter(Boolean)
+---
+
+<BaseLayout>
+  {/* 2026 认知觉醒入场仪式组件（首次访问全屏激活 · 回访静默直通 · ESC/滚轮随时逃逸） */}
+  <CognitiveAwakeningEntrance client:load />
+
+  {/* =========================================================================
+     Level 0: 首屏天幕与双层斜切卡片甲板 (Hero Section)
+     ========================================================================= */}
+  <section class="relative z-10 py-10 sm:py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        {/* 左侧文案与叙事 */}
+        <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+          <div class="flex flex-wrap items-center justify-center lg:justify-start gap-2">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#d5ed9e] text-[#12382d] shadow-xs">
+              <span class="inline-block w-2 h-2 rounded-full bg-[#12382d] animate-pulse"></span>
+              <span>2026 循证人生罗盘</span>
+              <span>·</span>
+              <span>{manifest.counts.items} 条建议全量保真</span>
+              <span>·</span>
+              <span>0 商业植入</span>
+            </div>
+
+            <button
+              type="button"
+              onclick="window.dispatchEvent(new CustomEvent('open-awakening'))"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 shadow-xs cursor-pointer tactile-press"
+              title="重新全屏体验认知觉醒罗盘仪式"
+            >
+              <span>✨ 认知觉醒仪式</span>
+              <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">重现</span>
+            </button>
+          </div>
+
+          {/* 殿堂级单行流体大标题：桌面与移动绝对单行贯通 */}
+          <div class="hero-headline-container py-1">
+            <h1 class="mega-monumental-headline text-gray-950 dark:text-gray-50">
+              世界以主题铺陈，生命按阶段决断。
+            </h1>
+          </div>
+
+          <div class="space-y-2">
+            <p class="text-base sm:text-xl font-serif text-emerald-800 dark:text-emerald-300 font-medium tracking-wide">
+              {MASTER_MAXIM.subtitle}
+            </p>
+            <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400 leading-relaxed max-w-xl mx-auto lg:mx-0">
+              原书 34 卷横向展开，同一句「现在最该做什么」，高中生和中年人的答案完全不同。<br class="hidden sm:inline" />
+              把 {manifest.counts.items} 条科学建议按人生阶段重排，只看当下最有用的高杠杆行动。
+            </p>
+          </div>
+
+          {/* 行动 CTA 按钮组 */}
+          <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-1">
+            <a
+              href="/stage/early/"
+              class="life-btn life-btn-lime px-6 py-3.5 text-sm font-bold shadow-md"
+            >
+              <span>🧭 进入人生阶段手册</span>
+              <span>&rarr;</span>
+            </a>
+            <a
+              href="/daily/"
+              class="life-btn life-btn-deep px-5 py-3.5 text-sm font-semibold"
+            >
+              <span>🎲 每日微决断抽签</span>
+            </a>
+            <a
+              href="/bingo/"
+              class="life-btn life-btn-outline px-5 py-3.5 text-sm font-semibold"
+            >
+              <span>🎯 零元九宫格</span>
+            </a>
+            <a
+              href="/dashboard/"
+              class="life-btn life-btn-outline px-5 py-3.5 text-sm font-semibold"
+            >
+              <span>📊 个人看板</span>
+            </a>
+          </div>
+
+          {/* 权威指标仪表盘 */}
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3">
+            <div class="p-3.5 rounded-2xl bg-white/70 dark:bg-[#12151c]/70 border border-[#dce4d5] dark:border-[#1c352a] text-center">
+              <div class="text-2xl sm:text-3xl font-extrabold font-mono text-emerald-700 dark:text-emerald-400">{manifest.counts.items}</div>
+              <div class="text-[11px] text-gray-500 mt-0.5">循证建议全量保真</div>
+            </div>
+            <div class="p-3.5 rounded-2xl bg-white/70 dark:bg-[#12151c]/70 border border-[#dce4d5] dark:border-[#1c352a] text-center">
+              <div class="text-2xl sm:text-3xl font-extrabold font-mono text-gray-900 dark:text-gray-100">{manifest.counts.chapters} 卷</div>
+              <div class="text-[11px] text-gray-500 mt-0.5">人生全景科学大纲</div>
+            </div>
+            <div class="p-3.5 rounded-2xl bg-white/70 dark:bg-[#12151c]/70 border border-[#dce4d5] dark:border-[#1c352a] text-center">
+              <div class="text-2xl sm:text-3xl font-extrabold font-mono text-amber-600 dark:text-amber-400">0 元</div>
+              <div class="text-[11px] text-gray-500 mt-0.5">高杠杆零成本小事</div>
+            </div>
+            <div class="p-3.5 rounded-2xl bg-white/70 dark:bg-[#12151c]/70 border border-[#dce4d5] dark:border-[#1c352a] text-center">
+              <div class="text-2xl sm:text-3xl font-extrabold font-mono text-emerald-700 dark:text-emerald-400">100%</div>
+              <div class="text-[11px] text-gray-500 mt-0.5">物理级零外发隐私</div>
+            </div>
+          </div>
+        </div>
+
+        {/* 右侧：双层斜切 Card Deck 轮播甲板 */}
+        <div class="lg:col-span-5 flex justify-center">
+          <HeroCardDeck client:load />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* =========================================================================
+     Level 1: 青柠跑马走字带 (Intro Band)
+     ========================================================================= */}
+  <div class="life-intro-band">
+    <div class="life-intro-track">
+      <span>01 寻根溯源 · 循证医学与跨学科共识 ✳</span>
+      <span>02 成本收益分析 · 零成本与高杠杆优先 ✳</span>
+      <span>03 此时决断 · 人按阶段活，摆脱无限焦虑 ✳</span>
+      <span>物理级零数据外发 · 离线优先主权 ✳</span>
+      <span>04 自由安全 · 构筑反脆弱底线 ✳</span>
+      {/* 重复一组保证平滑无缝滚动 */}
+      <span>01 寻根溯源 · 循证医学与跨学科共识 ✳</span>
+      <span>02 成本收益分析 · 零成本与高杠杆优先 ✳</span>
+      <span>03 此时决断 · 人按阶段活，摆脱无限焦虑 ✳</span>
+      <span>物理级零数据外发 · 离线优先主权 ✳</span>
+      <span>04 自由安全 · 构筑反脆弱底线 ✳</span>
+    </div>
+  </div>
+
+  {/* =========================================================================
+     Level 2: 四大微应用磁贴入口 (Action Funnel)
+     ========================================================================= */}
+  <section class="py-12 max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* 磁贴 1: 每日微决断 */}
+      <a
+        href="/daily/"
+        class="p-6 rounded-3xl bg-white dark:bg-[#131b17] border border-[#dce4d5] dark:border-[#1c352a] hover:border-emerald-500 hover:shadow-lg transition-all flex flex-col justify-between group"
+      >
+        <div>
+          <div class="w-12 h-12 rounded-2xl bg-[#d5ed9e] text-[#12382d] flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+            🎲
+          </div>
+          <div class="text-[11px] font-mono text-emerald-800 dark:text-emerald-400 font-bold uppercase tracking-wider mb-1">
+            UTC+8 每日确定性
+          </div>
+          <h3 class="text-lg font-serif font-bold text-gray-900 dark:text-white group-hover:text-emerald-700 transition-colors">
+            每日微决断抽签
+          </h3>
+          <p class="text-xs text-gray-500 mt-2 leading-relaxed">
+            每天为你指派 1 件可落地的生活小事。支持 3D 翻看顶刊循证医学出处，一键打卡。
+          </p>
+        </div>
+        <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800 text-xs font-semibold text-emerald-700 dark:text-emerald-400 inline-flex items-center gap-1">
+          立即抽取今日微决断 &rarr;
+        </div>
+      </a>
+
+      {/* 磁贴 2: 零元行动九宫格 */}
+      <a
+        href="/bingo/"
+        class="p-6 rounded-3xl bg-white dark:bg-[#131b17] border border-[#dce4d5] dark:border-[#1c352a] hover:border-emerald-500 hover:shadow-lg transition-all flex flex-col justify-between group"
+      >
+        <div>
+          <div class="w-12 h-12 rounded-2xl bg-[#abc394] text-[#12382d] flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+            🎯
+          </div>
+          <div class="text-[11px] font-mono text-emerald-800 dark:text-emerald-400 font-bold uppercase tracking-wider mb-1">
+            ¥0 零元生活实践
+          </div>
+          <h3 class="text-lg font-serif font-bold text-gray-900 dark:text-white group-hover:text-emerald-700 transition-colors">
+            零元行动九宫格
+          </h3>
+          <p class="text-xs text-gray-500 mt-2 leading-relaxed">
+            3x3 九宫格连线打卡，8 条胜负线检验你的日常性价比。达成 Bingo 触发晶体祝捷与海报生成。
+          </p>
+        </div>
+        <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800 text-xs font-semibold text-emerald-700 dark:text-emerald-400 inline-flex items-center gap-1">
+          挑战今日九宫格 &rarr;
+        </div>
+      </a>
+
+      {/* 磁贴 3: 精选 50 条 */}
+      <a
+        href="/top-50/"
+        class="p-6 rounded-3xl bg-white dark:bg-[#131b17] border border-[#dce4d5] dark:border-[#1c352a] hover:border-emerald-500 hover:shadow-lg transition-all flex flex-col justify-between group"
+      >
+        <div>
+          <div class="w-12 h-12 rounded-2xl bg-[#78987a] text-white flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+            ⭐
+          </div>
+          <div class="text-[11px] font-mono text-emerald-800 dark:text-emerald-400 font-bold uppercase tracking-wider mb-1">
+            二八定律核心盘
+          </div>
+          <h3 class="text-lg font-serif font-bold text-gray-900 dark:text-white group-hover:text-emerald-700 transition-colors">
+            精选 50 条高性价比行动
+          </h3>
+          <p class="text-xs text-gray-500 mt-2 leading-relaxed">
+            从全书 654 条严苛过滤出确定性最高、阻抗最小的 50 条。支持完成度环比与批量日历导出。
+          </p>
+        </div>
+        <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800 text-xs font-semibold text-emerald-700 dark:text-emerald-400 inline-flex items-center gap-1">
+          查阅精选 50 条 &rarr;
+        </div>
+      </a>
+
+      {/* 磁贴 4: 个人生活看板 */}
+      <a
+        href="/dashboard/"
+        class="p-6 rounded-3xl bg-white dark:bg-[#131b17] border border-[#dce4d5] dark:border-[#1c352a] hover:border-emerald-500 hover:shadow-lg transition-all flex flex-col justify-between group"
+      >
+        <div>
+          <div class="w-12 h-12 rounded-2xl bg-[#12382d] text-[#d5ed9e] flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+            📊
+          </div>
+          <div class="text-[11px] font-mono text-emerald-800 dark:text-emerald-400 font-bold uppercase tracking-wider mb-1">
+            加权度量衡
+          </div>
+          <h3 class="text-lg font-serif font-bold text-gray-900 dark:text-white group-hover:text-emerald-700 transition-colors">
+            个人生活性价比看板
+          </h3>
+          <p class="text-xs text-gray-500 mt-2 leading-relaxed">
+            已做到计 1.0，待做计 0.4。端侧量化你的生活掌控力，五大阶段完成率一览无遗，支持全息导出。
+          </p>
+        </div>
+        <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800 text-xs font-semibold text-emerald-700 dark:text-emerald-400 inline-flex items-center gap-1">
+          查看我的综合得分 &rarr;
+        </div>
+      </a>
+    </div>
+  </section>
+
+  {/* 急性生活痛点分诊台（0 KB 运行时） */}
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <PhenomenonChips />
+  </div>
+
+  {/* =========================================================================
+     Level 3: 硬核决策底盘 · 五大生命阶段手册
+     ========================================================================= */}
+  <section class="mt-12 py-8 max-w-7xl mx-auto px-4 sm:px-6 space-y-6">
+    <div class="flex items-center justify-between border-b border-[#dce4d5] dark:border-[#1c352a] pb-3">
+      <div>
+        <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 font-serif">
+          🧭 五大人群生命阶段
+        </h2>
+        <p class="text-xs text-gray-500 mt-0.5">同一句建议，在不同阶段的优先级完全相反。按生命节律决断当下。</p>
+      </div>
+      <a href="/stage/early/" class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 hover:underline">
+        查看完整阶段手册 &rarr;
+      </a>
+    </div>
+
+    {/* 阶段卡片网格 */}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+      {stages.map((st, idx) => (
+        <a
+          href={`/stage/${st.id}/`}
+          data-stage-dock={idx}
+          class="spotlight-card p-4 rounded-2xl border border-[#dce4d5] dark:border-[#1c352a] bg-white/80 dark:bg-[#12141a]/80 backdrop-blur-md hover:border-emerald-500 transition-all card-hover-tactile group flex flex-col justify-between"
+        >
+          <div class="spotlight-glow" aria-hidden="true"></div>
+          <div class="relative z-10">
+            <div class="flex items-center justify-between text-xs text-gray-400 mb-2">
+              <span class="font-mono">{st.ages}</span>
+              <span class="text-emerald-600 dark:text-emerald-400 font-semibold group-hover:translate-x-1 transition-transform">
+                &rarr;
+              </span>
+            </div>
+            <h3 class="text-base font-bold text-gray-900 dark:text-gray-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors font-serif">
+              {st.name}
+            </h3>
+            <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed">
+              {st.thesis}
+            </p>
+          </div>
+          <div class="relative z-10 mt-4 pt-2.5 border-t border-gray-100 dark:border-gray-800 text-[11px] text-gray-400 flex items-center justify-between">
+            <span>先做 {st.picks.length} 件事</span>
+            <span>精选 {st.funnel.essence} 条</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  {/* =========================================================================
+     Level 3: 八大紧急时刻行动清单
+     ========================================================================= */}
+  <section class="mt-8 py-8 max-w-7xl mx-auto px-4 sm:px-6 space-y-6">
+    <div class="flex items-center justify-between border-b border-[#dce4d5] dark:border-[#1c352a] pb-3">
+      <div>
+        <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 font-serif">
+          ⚡ 八大紧急时刻行动剧本
+        </h2>
+        <p class="text-xs text-gray-500 mt-0.5">被裁员、被欠薪、租房退租、确诊疾病。从 1 小时内到 90 天法定红线倒排。</p>
+      </div>
+      <a href="/scenario/laid-off/" class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 hover:underline">
+        查看全部 8 大剧本 &rarr;
+      </a>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      {scenarios.map((sc) => (
+        <a
+          href={`/scenario/${sc.id}/`}
+          class="p-4 rounded-2xl bg-white dark:bg-[#131b17] border border-[#dce4d5] dark:border-[#1c352a] hover:border-red-500/60 transition-all card-hover-tactile group"
+        >
+          <div class="text-xs font-mono text-red-600 dark:text-red-400 font-bold mb-1">
+            紧急避险
+          </div>
+          <h3 class="font-serif font-bold text-sm text-gray-900 dark:text-white group-hover:text-red-600 transition-colors">
+            {sc.title}
+          </h3>
+          <p class="text-[11px] text-gray-500 mt-1 line-clamp-1">
+            {sc.thesis}
+          </p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  {/* =========================================================================
+     Level 4: 34 卷生活主题科学大纲全景网格
+     ========================================================================= */}
+  <section class="mt-12 py-10 max-w-7xl mx-auto px-4 sm:px-6 space-y-6">
+    <div class="flex items-center justify-between border-b border-[#dce4d5] dark:border-[#1c352a] pb-3">
+      <div>
+        <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 font-serif">
+          📖 34 卷生活主题全景网格
+        </h2>
+        <p class="text-xs text-gray-500 mt-0.5">全景覆盖：睡眠、饮食、租房、工作、投资、人际、防诈等全维度生活议题</p>
+      </div>
+      <a href="/search/" class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 hover:underline">
+        全文检索 654 条建议 &rarr;
+      </a>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5">
+      {chapters.map((ch) => (
+        <a
+          href={`/chapter/${ch.n}/`}
+          class="p-3 rounded-xl bg-white dark:bg-[#131b17] border border-[#dce4d5] dark:border-[#1c352a] hover:border-emerald-500 hover:bg-[#edece1]/40 transition-all text-left group"
+        >
+          <div class="text-[10px] font-mono text-gray-400">
+            卷 {String(ch.n).padStart(2, '0')}
+          </div>
+          <div class="font-serif font-bold text-xs text-gray-900 dark:text-gray-100 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 line-clamp-1 mt-0.5">
+            {ch.title}
+          </div>
+          <div class="text-[10px] text-gray-400 mt-1">
+            {ch.items_count} 条建议
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  {/* =========================================================================
+     Level 5: 循证落地工具箱 (Bento Grid)
+     ========================================================================= */}
+  <section class="mt-12 py-12 max-w-7xl mx-auto px-4 sm:px-6 space-y-6">
+    <div class="text-center max-w-xl mx-auto space-y-2">
+      <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 font-serif">
+        循证落地工具箱 · 贯穿生活尺度
+      </h2>
+      <p class="text-xs sm:text-sm text-gray-500">
+        从危机时刻的以分钟计应对，到每日习惯的复利养成，每一步都有证据支持
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* Bento 1: 处境体检 */}
+      <a
+        href="/checkup/"
+        class="p-6 rounded-2xl border border-[#dce4d5] dark:border-[#1c352a] bg-white dark:bg-[#12141a] hover:border-emerald-500 transition-all card-hover-tactile group flex flex-col justify-between"
+      >
+        <div>
+          <div class="text-3xl mb-3">🩺</div>
+          <div class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 mb-2">
+            100% 浏览器本地计算 · 零上传
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 group-hover:text-emerald-600 transition-colors font-serif">
+            苏格拉底式处境体检
+          </h3>
+          <p class="mt-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+            17 道精简提问你的真实处境。本地纯函数实时剪枝，把无关条目自动折叠，直击关键盲点。
+          </p>
+        </div>
+        <div class="mt-6 text-xs font-semibold text-emerald-700 dark:text-emerald-400 inline-flex items-center gap-1">
+          立即开始体检自测 &rarr;
+        </div>
+      </a>
+
+      {/* Bento 2: 个人生活宪法 */}
+      <a
+        href="/tools/constitution/"
+        class="p-6 rounded-2xl border border-[#dce4d5] dark:border-[#1c352a] bg-white dark:bg-[#12141a] hover:border-emerald-500 transition-all card-hover-tactile group flex flex-col justify-between"
+      >
+        <div>
+          <div class="text-3xl mb-3">📜</div>
+          <div class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 mb-2">
+            布鲁姆 L6 创造层 · 个人立法
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 group-hover:text-emerald-600 transition-colors font-serif">
+            个人生活宪法起草器
+          </h3>
+          <p class="mt-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+            起草你的底线不可逾越条款，端侧生成 MY_CONSTITUTION.md 并支持高精箴言卡片 Canvas 导出。
+          </p>
+        </div>
+        <div class="mt-6 text-xs font-semibold text-emerald-700 dark:text-emerald-400 inline-flex items-center gap-1">
+          起草我的生活宪法 &rarr;
+        </div>
+      </a>
+
+      {/* Bento 3: 习惯工作台 */}
+      <a
+        href="/tools/habits/"
+        class="p-6 rounded-2xl border border-[#dce4d5] dark:border-[#1c352a] bg-white dark:bg-[#12141a] hover:border-emerald-500 transition-all card-hover-tactile group flex flex-col justify-between"
+      >
+        <div>
+          <div class="text-3xl mb-3">🌱</div>
+          <div class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 mb-2">
+            连续连胜 · 28天热力图
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 group-hover:text-emerald-600 transition-colors font-serif">
+            循证习惯养成工作台
+          </h3>
+          <p class="mt-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+            从全书任意建议一键沉淀为个人习惯，追踪坚持天数与热力网格。支持一键导出与恢复 JSON 备份。
+          </p>
+        </div>
+        <div class="mt-6 text-xs font-semibold text-emerald-700 dark:text-emerald-400 inline-flex items-center gap-1">
+          管理我的习惯列表 &rarr;
+        </div>
+      </a>
+
+      {/* Bento 4: 科学番茄钟 */}
+      <a
+        href="/tools/focus/"
+        class="p-6 rounded-2xl border border-[#dce4d5] dark:border-[#1c352a] bg-white dark:bg-[#12141a] hover:border-emerald-500 transition-all card-hover-tactile group flex flex-col justify-between"
+      >
+        <div>
+          <div class="text-3xl mb-3">⏳</div>
+          <div class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 mb-2">
+            流体呼吸 · 循证休息复位
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 group-hover:text-emerald-600 transition-colors font-serif">
+            科学心流番茄钟
+          </h3>
+          <p class="mt-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+            25分钟专注工作，5分钟强制离开屏幕。结合书中 20-20-20 护眼法、工间拉伸与箱式深呼吸。
+          </p>
+        </div>
+        <div class="mt-6 text-xs font-semibold text-emerald-700 dark:text-emerald-400 inline-flex items-center gap-1">
+          开启专注节律 &rarr;
+        </div>
+      </a>
+
+      {/* Bento 5: AI Agent 技能中心 */}
+      <a
+        href="/tools/agent/"
+        class="p-6 rounded-2xl border border-[#dce4d5] dark:border-[#1c352a] bg-white dark:bg-[#12141a] hover:border-emerald-500 transition-all card-hover-tactile group flex flex-col justify-between"
+      >
+        <div>
+          <div class="text-3xl mb-3">🤖</div>
+          <div class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-purple-50 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300 mb-2">
+            多层路由分流 · Skill 封装
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 group-hover:text-emerald-600 transition-colors font-serif">
+            AI Agent 技能与分流中心
+          </h3>
+          <p class="mt-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+            将 650+ 条建议封装为 Claude、Cursor、GPTs、Coze 标准技能；提供早中晚日常提醒 Cron 提示词生成。
+          </p>
+        </div>
+        <div class="mt-6 text-xs font-semibold text-emerald-700 dark:text-emerald-400 inline-flex items-center gap-1">
+          导出 Agent 技能设定 &rarr;
+        </div>
+      </a>
+
+      {/* Bento 6: 全量建议图谱 */}
+      <a
+        href="/search/"
+        class="p-6 rounded-2xl border border-[#dce4d5] dark:border-[#1c352a] bg-white dark:bg-[#12141a] hover:border-emerald-500 transition-all card-hover-tactile group flex flex-col justify-between"
+      >
+        <div>
+          <div class="text-3xl mb-3">📖</div>
+          <div class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-blue-50 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 mb-2">
+            654 条独立详情页 · 全文倒排
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 group-hover:text-emerald-600 transition-colors font-serif">
+            全量建议图谱检索
+          </h3>
+          <p class="mt-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+            每条建议拥有永久 8 位 Crockford UID，A/B/C 证据评级、成本标签、文献直链，连同 65 条学术争议 100% 原样呈现。
+          </p>
+        </div>
+        <div class="mt-6 text-xs font-semibold text-emerald-700 dark:text-emerald-400 inline-flex items-center gap-1">
+          全文深度检索建议 &rarr;
+        </div>
+      </a>
+    </div>
+  </section>
+
+  {/* 单例鼠标追踪与相变落地共振脚本 */}
+  <script is:inline>
+    let mouseFrame = null;
+    window.addEventListener('mousemove', (e) => {
+      if (mouseFrame) return;
+      mouseFrame = requestAnimationFrame(() => {
+        mouseFrame = null;
+        const cards = document.querySelectorAll('.spotlight-card');
+        for (let i = 0; i < cards.length; i++) {
+          const card = cards[i];
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          if (x >= -80 && x <= rect.width + 80 && y >= -80 && y <= rect.height + 80) {
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+          }
+        }
+      });
+    }, { passive: true });
+
+    window.addEventListener('awakening-dock-landed', () => {
+      const cards = document.querySelectorAll('[data-stage-dock]');
+      cards.forEach((card, idx) => {
+        setTimeout(() => {
+          card.classList.add('dock-pulsing');
+          setTimeout(() => card.classList.remove('dock-pulsing'), 650);
+        }, idx * 60);
+      });
+    });
+  </script>
+</BaseLayout>

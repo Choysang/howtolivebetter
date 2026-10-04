@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import AgentHub from '../../../islands/AgentHub.tsx'
+---
+
+<BaseLayout
+  title="AI Agent Skill 封装中心与多层路由分流 · 高性价比人生指南"
+  description="将 650+ 条高性价比建议封装为标准 Agent Skill。时效分流 + 资源约束过滤 + 证据评级切片，支持一键导出 Claude、Cursor、ChatGPT 设定及日常提醒 Cron Prompts。"
+>
+  <div class="max-w-4xl mx-auto space-y-8">
+    <AgentHub client:load />
+  </div>
+</BaseLayout>

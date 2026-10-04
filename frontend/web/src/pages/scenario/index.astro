@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import { getScenarios } from '../../lib/kb.ts'
+
+const scenarios = getScenarios()
+---
+
+<BaseLayout
+  title="⚡ 紧急时刻行动指南 · 高性价比人生指南"
+  description="高危困境下的法定倒计时清单与红线自保：被裁了、被欠薪、租房签约退租、准备结婚、要生孩子、确诊慢病、家人走了、被骗了。"
+>
+  <div class="space-y-8">
+    <div class="border-b border-gray-200 dark:border-gray-800 pb-6">
+      <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 dark:bg-red-950/80 text-red-800 dark:text-red-300 mb-2">
+        ⚡ 应急自保剧本
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-gray-100 font-serif">
+        紧急时刻 · 倒计时行动清单
+      </h1>
+      <p class="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 max-w-2xl leading-relaxed">
+        突发困境来临时，顺序颠倒比内容做错更危险。以下 8 个场景按 1 小时内、24 小时内至法定诉讼时效倒排，步步有法可依。
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {scenarios.map((sc) => (
+        <a
+          href={`/scenario/${sc.id}/`}
+          class="p-6 rounded-2xl border border-gray-200/80 dark:border-gray-800 bg-white dark:bg-[#12141a] hover:border-red-500 transition-all card-hover-tactile group block space-y-3"
+        >
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono text-gray-400">
+              {sc.steps.length} 个倒计时步骤
+            </span>
+            <span class="text-red-600 dark:text-red-400 text-sm font-semibold group-hover:translate-x-0.5 transition-transform">
+              立即进入 &rarr;
+            </span>
+          </div>
+
+          <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 group-hover:text-red-600 transition-colors">
+            {sc.title}
+          </h2>
+
+          <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+            {sc.subtitle}
+          </p>
+
+          <div class="pt-2 text-[11px] text-gray-400 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between">
+            <span>出处：{sc.sources.join(' · ')}</span>
+            <span>支持导出 .ics 日历</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

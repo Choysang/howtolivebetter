@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { getStages, getManifest } from '../lib/kb.ts'
+import LifeScoreDashboard from '../islands/LifeScoreDashboard.tsx'
+
+const stages = getStages()
+const manifest = getManifest()
+
+const stageSummaries = stages.map((st) => ({
+  id: st.id,
+  name: st.name,
+  ages: st.ages,
+  total: st.funnel.total,
+  uids: st.picks,
+}))
+---
+
+<BaseLayout
+  title="个人性价比生活仪表盘 · 高性价比人生指南"
+  description="量化你的生活性价比：已做到计 1.0 全额分，待做计 0.4 意愿分。本地优先计算个人得分与五大人生阶段完成率，支持全息备份。"
+>
+  <div class="py-10 sm:py-16 max-w-4xl mx-auto px-4 text-center space-y-4">
+    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#d5ed9e] text-[#12382d]">
+      <span>📊 个人生活度量衡</span>
+      <span>·</span>
+      <span>把抽象的道理转化为量化实践</span>
+    </div>
+
+    <h1 class="text-3xl sm:text-4xl font-serif font-bold text-gray-900 dark:text-white tracking-tight">
+      我的生活性价比看板
+    </h1>
+
+    <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
+      已做到计 1.0 全额分，待做计 0.4 意愿分。不设社交排行榜，不收集任何个人隐私，只做你个人的生活罗盘。
+    </p>
+
+    <div class="pt-6">
+      <LifeScoreDashboard
+        client:load
+        totalCount={manifest.counts.items}
+        stages={stageSummaries}
+      />
+    </div>
+
+    <div class="pt-10 text-xs text-gray-400 dark:text-gray-500 max-w-md mx-auto">
+      全部计算均在浏览器端实时运行。没有任何网络请求离开您的设备。
+    </div>
+  </div>
+</BaseLayout>

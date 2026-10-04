@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import { getManifest } from '../../lib/kb.ts'
+
+const manifest = getManifest()
+---
+
+<BaseLayout
+  title="关于本站与设计哲学 · 高性价比人生指南"
+  description="了解本站的重排哲学、零上传隐私白皮书与开源署名协议。"
+>
+  <div class="space-y-10 max-w-3xl mx-auto">
+    <div class="border-b border-gray-200 dark:border-gray-800 pb-6">
+      <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300">
+        关于与理念
+      </span>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-gray-100 font-serif mt-3">
+        原书按主题写，人按阶段活
+      </h1>
+    </div>
+
+    <div class="prose-editorial text-gray-700 dark:text-gray-300 space-y-6 text-sm sm:text-base leading-relaxed">
+      <p>
+        开源知识库《高性价比人生指南》（上游：<a href={manifest.upstream.repo} target="_blank" rel="noopener" class="text-emerald-600 underline">HowToLiveBetter</a>，作者 albert4719 与贡献者）汇集了 34 章、654 条基于循证科学的生活建议。
+      </p>
+
+      <p>
+        但原书是按主题分类的（睡眠、饮食、租房、理财、法律等）。然而在现实世界中，<strong>人是按照生命阶段生活、按照具体处境面临抉择的</strong>：
+      </p>
+
+      <ul>
+        <li>一个高三学生，最需要的是保睡眠、防近视、科学信息卫生与高考志愿常识，不需要看中年家庭大病保单；</li>
+        <li>一个刚踏入社会的年轻人，最迫切的是租房交接取证、劳动法违约金防坑、建立第一笔 6 个月应急金；</li>
+        <li>一个步入中年的职场人，面临的是父母突发重疾防范、体检癌症早筛、守住家庭资产流动性。</li>
+      </ul>
+
+      <p>
+        因此，我们打造了这个现代化重排交互站点：<strong>原文一字未改，重在多维重排</strong>。让你每次打开，只直面当下最有价值的那几十条。
+      </p>
+
+      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 font-serif pt-4">
+        🔒 隐私来自物理架构，不靠口头承诺
+      </h2>
+
+      <p>
+        许多工具要求你注册账号、输入家庭收入、上传租房合同。我们坚持 <strong>Local-First（本地优先）</strong>：
+      </p>
+
+      <ul>
+        <li><strong>零账号体系</strong>：不需要注册，不需要绑定手机号或微信；</li>
+        <li><strong>零数据上传</strong>：处境体检的所有布尔谓词匹配、剪枝引擎全部在你的浏览器本地执行；</li>
+        <li><strong>答案存放在 URL Hash 片段中</strong>：体检答案只在网页地址的 <code>#facts=...</code> 后面，这部分数据绝不会被浏览器发送给任何服务器；</li>
+        <li><strong>随时一键清除</strong>：打卡数据保存在你的本地 LocalStorage，你可以随时清空。</li>
+      </ul>
+
+      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 font-serif pt-4">
+        📜 开源许可与致谢
+      </h2>
+
+      <p>
+        本站严格遵守 <strong>CC BY 4.0 署名许可协议</strong>。上游开源项目由 albert4719 发起并由数百位社区贡献者共同维护。所有条目出处、文献引用、甚至作者标注的争议点，均被原封不动地忠实呈现。
+      </p>
+    </div>
+  </div>
+</BaseLayout>

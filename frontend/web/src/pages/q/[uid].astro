@@ -1,0 +1,308 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import { getItems, getChapterByN, getStages } from '../../lib/kb.ts'
+import EvidenceBadge from '../../components/EvidenceBadge.astro'
+import CostPills from '../../components/CostPills.astro'
+import DialecticTribunal from '../../components/DialecticTribunal.astro'
+
+export function getStaticPaths() {
+  const items = getItems()
+  return items.map((item) => ({
+    params: { uid: item.uid },
+    props: { item },
+  }))
+}
+
+const { item } = Astro.props
+const { source, overlay, derived } = item
+const chapter = getChapterByN(source.chapter)
+const allStages = getStages()
+
+// 查找关联的阶段
+const matchedStages = allStages.filter((st) => {
+  return st.picks.includes(item.uid) || st.essence.some((e) => e.uid === item.uid)
+})
+
+// 解析参考文献为列表
+const rawRefs = source.refs || ''
+const refsList: string[] = typeof rawRefs === 'string'
+  ? rawRefs.split(/\s*;\s*|\n+/).map((r: string) => r.trim()).filter(Boolean)
+  : Array.isArray(rawRefs)
+  ? rawRefs
+  : []
+
+const itemNote = source.note || (source as any).notes || ''
+const shareText = `【高性价比人生指南】${source.title}\n🔬 循证等级：${source.evidence}\n💰 成本：金钱 ${source.tags.money} | 时间 ${source.tags.time} | 毅力 ${source.tags.willpower}\n💡 核心建议：${source.plain || source.benefit}\n📖 详情出处：第 ${source.chapter} 章 · 条目 ${source.index}\n🔗 完整依据：${Astro.url.href}`
+---
+
+<BaseLayout
+  title={`#${item.uid} · ${source.title} · 高性价比人生指南`}
+  description={source.plain || source.benefit}
+>
+  <div class="space-y-8 max-w-4xl mx-auto">
+    {/* 面包屑导航与跨模块上下文回溯 */}
+    <div class="space-y-3">
+      <nav class="flex items-center gap-2 text-xs text-gray-500 flex-wrap">
+        <a href="/" class="hover:text-emerald-600 transition-colors">首页</a>
+        <span>/</span>
+        {chapter && (
+          <>
+            <a href={`/chapter/${chapter.n}/`} class="hover:text-emerald-600 transition-colors">
+              第 {chapter.n} 章 · {chapter.title}
+            </a>
+            <span>/</span>
+          </>
+        )}
+        <span class="font-mono text-gray-800 dark:text-gray-200">#{item.uid}</span>
+      </nav>
+
+      {/* 2026 跨模块上下文回溯胶囊（Context Handoff Pill） */}
+      <div id="context-pill-container" class="hidden animate-fade-up">
+        <a
+          id="context-pill-link"
+          href="#"
+          class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium bg-emerald-50 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/80 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition-colors shadow-xs group"
+        >
+          <span id="context-pill-icon">🧭</span>
+          <span id="context-pill-text">返回来源上下文</span>
+          <span class="text-emerald-600 dark:text-emerald-400 group-hover:-translate-x-0.5 transition-transform">&larr;</span>
+        </a>
+      </div>
+    </div>
+
+    {/* 条目头部卡片 */}
+    <div class="p-6 sm:p-8 rounded-2xl border border-gray-200/80 dark:border-gray-800 bg-white dark:bg-[#12141a] shadow-xs space-y-4">
+      <div class="flex items-center justify-between gap-3 flex-wrap">
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="font-mono text-sm font-bold px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+            #{item.uid}
+          </span>
+          <EvidenceBadge
+            evidence={source.evidence}
+            evidenceBase={source.evidenceBase}
+            disputed={source.flags.disputed}
+            unverified={source.flags.unverified}
+          />
+        </div>
+
+        <div class="flex items-center gap-2 flex-wrap">
+          <button
+            id="fav-toggle-btn"
+            data-uid={item.uid}
+            onclick={`window.toggleItemFav && window.toggleItemFav('${item.uid}')`}
+            type="button"
+            class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+            title="收藏此条建议到本地设备"
+          >
+            ☆ 收藏备忘
+          </button>
+          <button
+            id="share-card-btn"
+            data-share-text={shareText}
+            onclick="window.copyShareText && window.copyShareText(this)"
+            type="button"
+            class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+            title="一键复制精炼文案，可直接粘贴发微信群或发给亲友"
+          >
+            📋 复制微信分享文案
+          </button>
+          <button
+            id="read-toggle-btn"
+            data-uid={item.uid}
+            onclick={`window.toggleItemRead && window.toggleItemRead('${item.uid}')`}
+            type="button"
+            class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+            title="点击切换已读状态"
+          >
+            📖 标记为已读
+          </button>
+          <span class="text-xs text-gray-400 ml-auto sm:ml-0">
+            原书第 {source.chapter} 章 · 条目 {source.index}
+          </span>
+        </div>
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 dark:text-gray-100 font-serif leading-tight">
+        {source.title}
+      </h1>
+
+      <CostPills tags={source.tags} />
+    </div>
+
+    {/* 争议或待核实警示条 */}
+    {source.flags.disputed && (
+      <div class="p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 text-xs sm:text-sm text-rose-900 dark:text-rose-200 space-y-1">
+        <div class="font-bold flex items-center gap-1.5">
+          ⚠️ 学术界/循证医学争议标注：
+        </div>
+        <p class="leading-relaxed opacity-90">
+          原书对本条目明确标注为「争议」。存在不同口径或对立研究结论，请阅读正文及下方参考文献进行批判性评估。
+        </p>
+      </div>
+    )}
+
+    {source.flags.unverified && (
+      <div class="p-4 rounded-xl bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-900/60 text-xs sm:text-sm text-orange-900 dark:text-orange-200 space-y-1">
+        <div class="font-bold flex items-center gap-1.5">
+          🔍 待核实提醒：
+        </div>
+        <p class="leading-relaxed opacity-90">
+          原书作者注明本条部分结论或数据源尚待进一步大规模人群研究验证。
+        </p>
+      </div>
+    )}
+
+    {/* 核心价值三大框 */}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* 收益 */}
+      {source.benefit && (
+        <div class="p-5 rounded-xl border border-emerald-200/80 dark:border-emerald-900/60 bg-emerald-50/40 dark:bg-emerald-950/20 space-y-2">
+          <div class="text-xs font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5">
+            📈 核心收益口径 ({source.tags.caliber})
+          </div>
+          <p class="text-xs sm:text-sm text-gray-800 dark:text-gray-200 leading-relaxed font-medium">
+            {source.benefit}
+          </p>
+        </div>
+      )}
+
+      {/* 成本与代价 */}
+      {source.cost && (
+        <div class="p-5 rounded-xl border border-gray-200/80 dark:border-gray-800 bg-white dark:bg-[#12141a] space-y-2">
+          <div class="text-xs font-bold text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
+            💰 真实成本与付出
+          </div>
+          <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+            {source.cost}
+          </p>
+        </div>
+      )}
+    </div>
+
+    {/* 简明大白话 */}
+    {source.plain && (
+      <div class="p-5 rounded-xl border border-gray-200/80 dark:border-gray-800 bg-white dark:bg-[#12141a] space-y-2">
+        <div class="text-xs font-bold text-gray-700 dark:text-gray-300">
+          💡 简明大白话
+        </div>
+        <p class="text-sm sm:text-base text-gray-800 dark:text-gray-200 leading-relaxed">
+          {source.plain}
+        </p>
+      </div>
+    )}
+
+    {/* 详细正文 */}
+    {source.body && (
+      <div class="p-6 sm:p-8 rounded-2xl border border-gray-200/80 dark:border-gray-800 bg-white dark:bg-[#12141a] shadow-xs space-y-4">
+        <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100 font-serif border-b border-gray-100 dark:border-gray-800 pb-3">
+          详细实操要点与科学阐述
+        </h2>
+        <div class="prose-editorial whitespace-pre-line text-sm sm:text-base leading-relaxed text-gray-700 dark:text-gray-300">
+          {source.body}
+        </div>
+      </div>
+    )}
+
+    {/* 辩证审判席：双向钢人、失效边界、心智透镜与苏格拉底镜子 */}
+    <div class="p-6 sm:p-8 rounded-2xl border border-gray-200/80 dark:border-gray-800 bg-white dark:bg-[#12141a] shadow-xs">
+      <DialecticTribunal item={item} />
+    </div>
+
+    {/* 备注 */}
+    {itemNote && (
+      <div class="p-5 rounded-xl border border-gray-200/60 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/30 text-xs text-gray-500 dark:text-gray-400 space-y-1">
+        <div class="font-bold text-gray-700 dark:text-gray-300">📌 附加说明与备注：</div>
+        <p class="leading-relaxed whitespace-pre-line">{itemNote}</p>
+      </div>
+    )}
+
+    {/* 科学文献与出处链接 */}
+    {refsList.length > 0 && (
+      <div class="p-6 rounded-2xl border border-gray-200/80 dark:border-gray-800 bg-white dark:bg-[#12141a] shadow-xs space-y-3">
+        <div class="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-2">
+          <h2 class="text-sm font-bold text-gray-900 dark:text-gray-100 uppercase tracking-wider">
+            📚 科学文献依据 ({refsList.length})
+          </h2>
+          <span class="text-[11px] text-gray-400">可独立复核验证</span>
+        </div>
+        <ul class="space-y-2 text-xs">
+          {refsList.map((ref: string) => {
+            const isUrl = ref.includes('http://') || ref.includes('https://')
+            const urlMatch = ref.match(/(https?:\/\/[^\s>]+)/)
+            const href = urlMatch ? urlMatch[1] : ref
+            return (
+              <li class="p-2.5 rounded-lg bg-gray-50 dark:bg-gray-850 border border-gray-100 dark:border-gray-800 break-all font-mono">
+                {isUrl ? (
+                  <a href={href} target="_blank" rel="noopener" class="text-emerald-600 dark:text-emerald-400 hover:underline inline-flex items-center gap-1">
+                    🔗 {ref} &rarr;
+                  </a>
+                ) : (
+                  <span class="text-gray-700 dark:text-gray-300">📄 {ref}</span>
+                )}
+              </li>
+            )
+          })}
+        </ul>
+      </div>
+    )}
+
+    {/* 命中人群阶段 */}
+    {matchedStages.length > 0 && (
+      <div class="p-5 rounded-xl border border-gray-200/80 dark:border-gray-800 bg-white dark:bg-[#12141a] flex items-center justify-between flex-wrap gap-3">
+        <span class="text-xs text-gray-500">本条目被收录进以下人群阶段手册：</span>
+        <div class="flex items-center gap-2">
+          {matchedStages.map((st) => (
+            <a
+              href={`/stage/${st.id}/`}
+              class="px-3 py-1 rounded-lg text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 hover:underline"
+            >
+              🧭 {st.name} ({st.ages})
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+
+  {/* 2026 跨模块上下文感知与回溯脚本（安全白名单与防注入） */}
+  <script is:inline>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const from = params.get('from');
+      const src = params.get('src');
+      const srcTitle = params.get('srcTitle');
+
+      const allowedFrom = ['stage', 'scenario', 'checkup', 'search'];
+      if (from && allowedFrom.includes(from)) {
+        const container = document.getElementById('context-pill-container');
+        const link = document.getElementById('context-pill-link');
+        const icon = document.getElementById('context-pill-icon');
+        const text = document.getElementById('context-pill-text');
+
+        if (container && link && icon && text) {
+          if (from === 'stage' && src) {
+            link.href = `/stage/${encodeURIComponent(src)}/`;
+            icon.textContent = '🧭';
+            text.textContent = `返回【${(srcTitle || '阶段手册').slice(0, 30)}】`;
+          } else if (from === 'scenario' && src) {
+            link.href = `/scenario/${encodeURIComponent(src)}/`;
+            icon.textContent = '⚡';
+            text.textContent = `返回【${(srcTitle || '紧急时刻剧本').slice(0, 30)}】`;
+          } else if (from === 'checkup') {
+            link.href = `/checkup/`;
+            icon.textContent = '🩺';
+            text.textContent = '返回【处境体检自测报告】';
+          } else if (from === 'search') {
+            link.href = `/search/`;
+            icon.textContent = '🔍';
+            text.textContent = '返回【知识搜索】';
+          } else {
+            return;
+          }
+
+          container.classList.remove('hidden');
+        }
+      }
+    })();
+  </script>
+</BaseLayout>

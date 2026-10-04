@@ -1,0 +1,30 @@
+/**
+ * 编辑层：每日打卡（17 件）。
+ * 标准：零成本、当天可自检、结果只有做了/没做；每件带原书 uid 出处。
+ * 不做连续天数、排行与奖励（健康类习惯不制造愧疚）；sensitive 条目永不出现。
+ * 后 4 件是周期事项，用 reminder 字段导出 .ics 提醒。
+ */
+import type { CheckinSpec } from '../../contracts/kb.ts'
+
+export const checkin: CheckinSpec = {
+  intro: '从原书筛出的零成本小事。只记「做了 / 没做」，不搞连续天数和惩罚——健康类习惯不制造愧疚。数据只存在你的设备上。',
+  items: [
+    { id: 'sleep-enough', label: '睡够 7–8 小时', detail: '躺下到起床满 7 小时就算', item: 'E6AZRTK5' },
+    { id: 'sleep-ontime', label: '到点就睡，没为刷屏熬夜', detail: '比计划就寝时间晚不超过半小时', item: 'ZQAGFRDP' },
+    { id: 'walk', label: '走了 7000 步以上', detail: '手机计步为准', item: 'PFP80FJ6' },
+    { id: 'move-break', label: '久坐中起身活动过', detail: '每坐一阵就起身动一动', item: '305B021G' },
+    { id: 'no-sugary', label: '今天没喝含糖饮料', detail: '奶茶、果汁、含糖咖啡都算', item: '9FS8KFNP' },
+    { id: 'fruit-veg', label: '吃够 5 份果蔬', detail: '约 400 克，生熟都算', item: '37N2T94B' },
+    { id: 'no-drink', label: '今天没喝酒', detail: '少喝不喝都记这一条', item: 'X62G3WT1' },
+    { id: 'no-smoke', label: '今天没吸烟', detail: '戒烟中的按天记', item: 'DB85R216' },
+    { id: 'teeth', label: '刷了牙，清了一次牙缝', detail: '牙线或牙缝刷都算', item: 'AAV0F902' },
+    { id: 'daylight', label: '白天出门见了光', detail: '15 分钟以上就够', item: 'SXFY9PW9' },
+    { id: 'no-caffeine-pm', label: '下午两点后没碰咖啡因', detail: '咖啡、浓茶、可乐都算', item: '0G8R2W4D' },
+    { id: 'screen-off', label: '睡前一小时放下了手机', detail: '发光屏幕都算', item: '2ESRC7QE' },
+    { id: 'seatbelt', label: '坐车系了安全带', detail: '后排也要系', item: 'GQM41JFB' },
+    { id: 'strength', label: '本周做了 30–60 分钟力量训练', detail: '弹力带、哑铃、自重都算', item: 'VJ2EKX7V', reminder: { title: '每周力量训练', intervalDays: 7 } },
+    { id: 'expired-meds', label: '清了一遍家里的过期药', detail: '连包装投有害垃圾桶', item: 'DMZN30FP', reminder: { title: '清理过期药', intervalDays: 90 } },
+    { id: 'credit-report', label: '查了一次个人征信报告', detail: '人行征信中心官网，每年免费两次', item: 'SPMNCSZ3', reminder: { title: '查征信报告', intervalDays: 180 } },
+    { id: 'device-audit', label: '清了一遍账号登录设备和授权应用', detail: '不认识的全部退出', item: 'Z4NZ2X3E', reminder: { title: '账号安全巡检', intervalDays: 90 } },
+  ],
+}

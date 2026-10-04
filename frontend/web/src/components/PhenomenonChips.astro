@@ -1,0 +1,77 @@
+---
+/**
+ * frontend/web/src/components/PhenomenonChips.astro · 首页痛点现象分诊台与全局搜索入口
+ * 
+ * 架构规范：
+ * 1. 0 KB 客户端运行时 JS 水合，100% 静态 HTML 渲染；
+ * 2. 语义化 `<form action="/search/" method="get">` 渐进增强，无 JS 环境下按回车仍能原生检索；
+ * 3. 口语化现象芯片由 `@contracts/router.ts` 构建期直出，三级时效色彩阶梯（E0/E1/E2）；
+ * 4. 配合 Astro 5 `<ClientRouter />` 达成微秒级无刷新软路由直达，0 状态丢失。
+ */
+import { PHENOMENON_CHIPS } from '@contracts/router.ts'
+---
+
+<section class="w-full max-w-4xl mx-auto my-8 relative z-10 animate-fade-up" aria-label="生活痛点现象直达分诊台">
+  {/* 全局搜索直达胶囊（原生表单 + 0 依赖渐进增强） */}
+  <form action="/search/" method="get" class="relative group mb-5">
+    <div class="relative flex items-center w-full rounded-2xl bg-white/90 dark:bg-[#12141a]/90 border border-gray-200/90 dark:border-gray-800 shadow-sm backdrop-blur-md hover:border-emerald-500/60 dark:hover:border-emerald-500/60 transition-all">
+      <span class="pl-4 pr-2 text-gray-400 text-lg select-none" aria-hidden="true">🔍</span>
+      <input
+        type="text"
+        name="q"
+        placeholder="输入生活痛点、法律维权、急救现象，或点击下方口语芯片直达..."
+        class="w-full py-3.5 bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-400 text-sm sm:text-base outline-none pr-28 sm:pr-32"
+        autocomplete="off"
+      />
+      <div class="absolute right-3 flex items-center gap-1.5 pointer-events-none">
+        <kbd class="hidden sm:inline-block px-2 py-0.5 text-[11px] font-mono text-gray-400 bg-gray-100 dark:bg-gray-800/80 rounded border border-gray-200 dark:border-gray-700">
+          Enter 检索
+        </kbd>
+        <span class="hidden sm:inline-block text-gray-300 dark:text-gray-700">|</span>
+        <button
+          type="button"
+          onclick="window.dispatchEvent(new CustomEvent('open-command-palette'))"
+          class="pointer-events-auto hidden sm:inline-flex items-center gap-1 text-[11px] text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors cursor-pointer"
+          title="打开全局指令浮层 (Cmd+K)"
+        >
+          <kbd class="px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 font-mono">⌘K</kbd>
+        </button>
+      </div>
+    </div>
+  </form>
+
+  {/* 现象级口语芯片分类展示带 */}
+  <div class="space-y-3">
+    <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 px-1">
+      <span class="font-semibold flex items-center gap-1.5">
+        <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+        <span>常见生活痛点现象直达（点击免输入瞬时分诊）</span>
+      </span>
+      <span class="text-[11px] font-mono text-gray-400">0ms 纯函数分流</span>
+    </div>
+
+    <div class="flex flex-wrap gap-2 sm:gap-2.5">
+      {PHENOMENON_CHIPS.map((chip) => {
+        const isE0 = chip.urgency === 'E0'
+        const isE1 = chip.urgency === 'E1'
+        const badgeColor = isE0
+          ? 'bg-rose-50 hover:bg-rose-100 text-rose-700 dark:bg-rose-950/50 dark:hover:bg-rose-900/60 dark:text-rose-300 border-rose-200/80 dark:border-rose-800/80'
+          : isE1
+          ? 'bg-amber-50 hover:bg-amber-100 text-amber-800 dark:bg-amber-950/50 dark:hover:bg-amber-900/60 dark:text-amber-300 border-amber-200/80 dark:border-amber-800/80'
+          : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 dark:bg-emerald-950/50 dark:hover:bg-emerald-900/60 dark:text-emerald-300 border-emerald-200/80 dark:border-emerald-800/80'
+
+        return (
+          <a
+            href={`/search/?q=${encodeURIComponent(chip.query)}`}
+            class={`px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 border transition-all duration-150 active:scale-[0.98] card-hover-tactile ${badgeColor}`}
+            title={`点击直达「${chip.label}」应对方案`}
+          >
+            <span>{chip.icon}</span>
+            <span>{chip.label}</span>
+            <span class="text-[10px] opacity-60 font-mono">[{chip.urgency}]</span>
+          </a>
+        )
+      })}
+    </div>
+  </div>
+</section>

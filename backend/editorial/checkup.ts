@@ -1,0 +1,193 @@
+/** 编辑层：处境体检题库（17 问；答案 → facts 枚举；答案只在设备与 URL # 片段）。 */
+import type { CheckupSpec } from '../../contracts/kb.ts'
+
+export const checkup: CheckupSpec = {
+  intro:
+    '苏格拉底式问的是真实处境：住哪、怎么通勤、家里几口人。全部在浏览器本地计算，不上传任何数据；答案只保留在本页地址的 # 之后，关掉就没了。',
+  questions: [
+    {
+      id: 'age',
+      fact: 'age',
+      q: '你现在大概处在哪个年龄段？',
+      options: [
+        { label: '未满 18', facts: { age: 'under18' } },
+        { label: '18–22', facts: { age: '18to22' } },
+        { label: '23–35', facts: { age: '23to35' } },
+        { label: '36–55', facts: { age: '36to55' } },
+        { label: '56 以上', facts: { age: '56plus' } },
+        { label: '不确定 / 不想说', facts: { age: 'uncertain' } },
+      ],
+    },
+    {
+      id: 'occupation',
+      fact: 'occupation',
+      q: '现在的身份是？',
+      options: [
+        { label: '中学生（含高中）', facts: { occupation: 'hs-student' } },
+        { label: '大学生 / 研究生', facts: { occupation: 'college-student' } },
+        { label: '上班', facts: { occupation: 'employed' } },
+        { label: '自由职业 / 个体 / 创业', facts: { occupation: 'self-employed' } },
+        { label: '暂时没工作', facts: { occupation: 'unemployed' } },
+        { label: '退休', facts: { occupation: 'retired' } },
+        { label: '不确定', facts: { occupation: 'uncertain' } },
+      ],
+    },
+    {
+      id: 'housing',
+      fact: 'housing',
+      q: '你现在住哪？',
+      options: [
+        { label: '自己家（自有住房）', facts: { housing: 'own' } },
+        { label: '租房', facts: { housing: 'rent' } },
+        { label: '跟家人住', facts: { housing: 'with-family' } },
+        { label: '宿舍（学校/单位）', facts: { housing: 'dorm' } },
+        { label: '不确定', facts: { housing: 'uncertain' } },
+      ],
+    },
+    {
+      id: 'commute',
+      fact: 'commute',
+      q: '每天怎么通勤？',
+      options: [
+        { label: '基本不出门', facts: { commute: 'none' } },
+        { label: '单程半小时以内', facts: { commute: 'short' } },
+        { label: '单程一小时以上', facts: { commute: 'long' } },
+        { label: '不确定', facts: { commute: 'uncertain' } },
+      ],
+    },
+    {
+      id: 'family_elders',
+      fact: 'family_elders',
+      q: '家里有老人需要你照应吗？',
+      options: [
+        { label: '有', facts: { family_elders: 'yes' } },
+        { label: '没有', facts: { family_elders: 'no' } },
+        { label: '不确定', facts: { family_elders: 'uncertain' } },
+      ],
+    },
+    {
+      id: 'family_kids_preschool',
+      fact: 'family_kids_preschool',
+      q: '有学龄前的孩子吗？',
+      options: [
+        { label: '有', facts: { family_kids_preschool: 'yes' } },
+        { label: '没有', facts: { family_kids_preschool: 'no' } },
+        { label: '不确定', facts: { family_kids_preschool: 'uncertain' } },
+      ],
+    },
+    {
+      id: 'family_kids_school',
+      fact: 'family_kids_school',
+      q: '有在上学的孩子吗？',
+      options: [
+        { label: '有', facts: { family_kids_school: 'yes' } },
+        { label: '没有', facts: { family_kids_school: 'no' } },
+        { label: '不确定', facts: { family_kids_school: 'uncertain' } },
+      ],
+    },
+    {
+      id: 'family_pregnant',
+      fact: 'family_pregnant',
+      q: '自己或伴侣怀孕了吗？',
+      options: [
+        { label: '是', facts: { family_pregnant: 'yes' } },
+        { label: '否', facts: { family_pregnant: 'no' } },
+        { label: '不确定 / 不适用', facts: { family_pregnant: 'uncertain' } },
+      ],
+    },
+    {
+      id: 'health_chronic',
+      fact: 'health_chronic',
+      q: '确诊过慢性病吗（高血压、糖尿病之类）？',
+      options: [
+        { label: '有', facts: { health_chronic: 'yes' } },
+        { label: '没有', facts: { health_chronic: 'no' } },
+        { label: '不确定', facts: { health_chronic: 'uncertain' } },
+      ],
+    },
+    {
+      id: 'health_caregiver',
+      fact: 'health_caregiver',
+      q: '需要长期照护家里的病人吗？',
+      options: [
+        { label: '有', facts: { health_caregiver: 'yes' } },
+        { label: '没有', facts: { health_caregiver: 'no' } },
+        { label: '不确定', facts: { health_caregiver: 'uncertain' } },
+      ],
+    },
+    {
+      id: 'money_buffer',
+      fact: 'money_buffer',
+      q: '手头的应急钱，能撑几个月？',
+      options: [
+        { label: '半年以上', facts: { money_buffer: 'six-months' } },
+        { label: '一到六个月', facts: { money_buffer: 'one-to-six' } },
+        { label: '几乎没有', facts: { money_buffer: 'none' } },
+        { label: '还欠着债', facts: { money_buffer: 'debt' } },
+        { label: '不确定', facts: { money_buffer: 'uncertain' } },
+      ],
+    },
+    {
+      id: 'smoke',
+      fact: 'smoke',
+      q: '吸烟吗？',
+      options: [
+        { label: '吸', facts: { smoke: 'yes' } },
+        { label: '不吸', facts: { smoke: 'no' } },
+        { label: '不确定', facts: { smoke: 'uncertain' } },
+      ],
+    },
+    {
+      id: 'drink',
+      fact: 'drink',
+      q: '喝酒吗？',
+      options: [
+        { label: '经常喝', facts: { drink: 'regular' } },
+        { label: '偶尔喝', facts: { drink: 'occasional' } },
+        { label: '几乎不喝', facts: { drink: 'none' } },
+        { label: '不确定', facts: { drink: 'uncertain' } },
+      ],
+    },
+    {
+      id: 'sedentary',
+      fact: 'sedentary',
+      q: '白天坐着的时间长吗？',
+      options: [
+        { label: '大部分时间坐着（8 小时以上）', facts: { sedentary: 'yes' } },
+        { label: '不算久坐', facts: { sedentary: 'no' } },
+        { label: '不确定', facts: { sedentary: 'uncertain' } },
+      ],
+    },
+    {
+      id: 'sleep',
+      fact: 'sleep',
+      q: '平时睡多久？',
+      options: [
+        { label: '不足 7 小时', facts: { sleep: 'less7' } },
+        { label: '7–8 小时', facts: { sleep: 'seven-eight' } },
+        { label: '9 小时以上', facts: { sleep: 'nine-plus' } },
+        { label: '不确定', facts: { sleep: 'uncertain' } },
+      ],
+    },
+    {
+      id: 'drive',
+      fact: 'drive',
+      q: '经常开车或骑车吗？',
+      options: [
+        { label: '经常', facts: { drive: 'yes' } },
+        { label: '很少', facts: { drive: 'no' } },
+        { label: '不确定', facts: { drive: 'uncertain' } },
+      ],
+    },
+    {
+      id: 'tech',
+      fact: 'tech',
+      q: '工作或日常和写代码、做技术关系大吗？',
+      options: [
+        { label: '关系大', facts: { tech: 'yes' } },
+        { label: '没关系', facts: { tech: 'no' } },
+        { label: '不确定', facts: { tech: 'uncertain' } },
+      ],
+    },
+  ],
+}

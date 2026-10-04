@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "howtolivebetter": {
+      "command": "node",
+      "args": [
+        "ops/mcp-server.ts"
+      ]
+    }
+  }
+}

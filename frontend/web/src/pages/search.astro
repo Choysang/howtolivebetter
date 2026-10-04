@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import SearchInterface from '../islands/SearchInterface.tsx'
+import { getLiteItems } from '../lib/kb.ts'
+
+const initialItems = getLiteItems()
+---
+
+<BaseLayout
+  title="🔍 全库检索 · 高性价比人生指南"
+  description="全文检索 654 条建议、证据等级 A/B/C、成本标签与争议待核实标记。"
+>
+  <div class="space-y-6">
+    <div class="border-b border-gray-200 dark:border-gray-800 pb-4">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300">
+          全库深度检索
+        </span>
+        <span class="text-xs text-gray-400">
+          按证据等级与成本多维筛选
+        </span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-gray-100 font-serif">
+        654 条建议全文索引
+      </h1>
+    </div>
+
+    <SearchInterface client:load initialItems={initialItems} />
+  </div>
+</BaseLayout>

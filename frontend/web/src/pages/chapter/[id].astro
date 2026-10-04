@@ -1,0 +1,81 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import { getChapters, getItemsMap } from '../../lib/kb.ts'
+import ItemCard from '../../components/ItemCard.astro'
+
+export function getStaticPaths() {
+  const chapters = getChapters()
+  return chapters.map((chapter) => ({
+    params: { id: String(chapter.n) },
+    props: { chapter },
+  }))
+}
+
+const { chapter } = Astro.props
+const allChapters = getChapters()
+const itemsMap = getItemsMap()
+
+const chapterItems = chapter.uids.map((uid) => itemsMap.get(uid)!).filter(Boolean)
+const prevChapter = allChapters.find((c) => c.n === chapter.n - 1)
+const nextChapter = allChapters.find((c) => c.n === chapter.n + 1)
+---
+
+<BaseLayout
+  title={`第 ${chapter.n} 章 · ${chapter.title} · 高性价比人生指南`}
+  description={chapter.intro || `第 ${chapter.n} 章包含 ${chapterItems.length} 条高性价比建议`}
+>
+  <div class="space-y-8">
+    <div class="border-b border-gray-200 dark:border-gray-800 pb-6">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300">
+          原书章节浏览
+        </span>
+        <span class="text-xs font-mono text-gray-400">
+          Chapter {chapter.n} / 34
+        </span>
+      </div>
+
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-gray-100 font-serif">
+        第 {chapter.n} 章 · {chapter.title}
+      </h1>
+
+      {chapter.intro && (
+        <p class="mt-3 text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed max-w-3xl">
+          {chapter.intro}
+        </p>
+      )}
+
+      <div class="mt-4 text-xs text-gray-400">
+        本章收录 {chapterItems.length} 条建议 · 均为原书一字未改呈现
+      </div>
+    </div>
+
+    {/* 章节条目清单 */}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {chapterItems.map((item, idx) => (
+        <ItemCard item={item} rank={idx + 1} />
+      ))}
+    </div>
+
+    {/* 上一章 / 下一章 导航 */}
+    <div class="pt-8 border-t border-gray-200 dark:border-gray-800 flex items-center justify-between gap-4">
+      {prevChapter ? (
+        <a
+          href={`/chapter/${prevChapter.n}/`}
+          class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-[#12141a] border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:border-emerald-500"
+        >
+          &larr; 第 {prevChapter.n} 章 · {prevChapter.title}
+        </a>
+      ) : <div />}
+
+      {nextChapter && (
+        <a
+          href={`/chapter/${nextChapter.n}/`}
+          class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-[#12141a] border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:border-emerald-500"
+        >
+          第 {nextChapter.n} 章 · {nextChapter.title} &rarr;
+        </a>
+      )}
+    </div>
+  </div>
+</BaseLayout>

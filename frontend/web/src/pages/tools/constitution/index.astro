@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import ConstitutionForge from '../../../islands/ConstitutionForge.tsx'
+---
+
+<BaseLayout
+  title="个人生活宪法起草器 (Bloom L6) · 高性价比人生指南"
+  description="布鲁姆认知金字塔创造层：把 650+ 条外部建议，内化为你个人不可动摇的底层立宪原则与弹性地板保底承诺。支持一键导出 MY_CONSTITUTION.md 本地文件，数据物理级零离端。"
+>
+  <div class="max-w-4xl mx-auto space-y-8">
+    <ConstitutionForge client:load />
+  </div>
+</BaseLayout>

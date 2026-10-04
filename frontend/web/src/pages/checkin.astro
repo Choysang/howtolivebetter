@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { getCheckinSpec } from '../lib/kb.ts'
+import CheckinTracker from '../islands/CheckinTracker.tsx'
+import CognitiveEvolutionRadar from '../islands/CognitiveEvolutionRadar.tsx'
+
+const checkinSpec = getCheckinSpec()
+---
+
+<BaseLayout
+  title="✅ 每日零成本打卡 · 高性价比人生指南"
+  description="从原书筛出的 17 件零成本小事。只记做了/没做，不搞连续天数和心理惩罚，数据只存在你的设备上。"
+>
+  <div class="space-y-6">
+    <div class="border-b border-gray-200 dark:border-gray-800 pb-4">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300">
+          零成本微行动 · 免注册
+        </span>
+        <span class="text-xs text-gray-400">
+          健康习惯不制造愧疚感
+        </span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-gray-100 font-serif">
+        每日零成本小事自省
+      </h1>
+    </div>
+
+    {/* 布鲁姆心智六阶极坐标演化雷达仪表 */}
+    <CognitiveEvolutionRadar client:load />
+
+    {/* 斯多葛晨昏打卡看板与塞涅卡免责抽屉 */}
+    <CheckinTracker client:load spec={checkinSpec} />
+  </div>
+</BaseLayout>

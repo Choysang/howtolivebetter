@@ -1,0 +1,110 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import { getScenarios, getLiteItems } from '../../lib/kb.ts'
+import ScenarioTimeline from '../../islands/ScenarioTimeline.tsx'
+import { SCENARIO_ANTI_PLAYBOOKS } from '@kernel/cognitive.ts'
+
+export function getStaticPaths() {
+  const scenarios = getScenarios()
+  return scenarios.map((scenario) => ({
+    params: { id: scenario.id },
+    props: { scenario },
+  }))
+}
+
+const { scenario } = Astro.props
+const allScenarios = getScenarios()
+const liteItems = getLiteItems()
+const liteMap = new Map(liteItems.map((it) => [it.uid, it]))
+
+const stepsWithItems = scenario.steps.map((step) => {
+  const item = liteMap.get(step.item) ?? {
+    uid: step.item,
+    title: '建议条目',
+    chapter: 0,
+    index: 0,
+    evidence: 'A',
+    tags: { money: '0', time: '少', willpower: '否' },
+  }
+  return { step, item }
+})
+
+const antiPlaybook = SCENARIO_ANTI_PLAYBOOKS[scenario.id]
+---
+
+<BaseLayout
+  title={`⚡ 紧急时刻 · ${scenario.title} · 高性价比人生指南`}
+  description={scenario.subtitle}
+>
+  <div class="space-y-8">
+    {/* 场景顶栏 */}
+    <div class="border-b border-gray-200 dark:border-gray-800 pb-6">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 dark:bg-red-950/80 text-red-800 dark:text-red-300">
+          ⚡ 紧急时刻行动剧本
+        </span>
+        <span class="text-xs text-gray-400">
+          素材出处：{scenario.sources.join(' · ')}
+        </span>
+      </div>
+
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-gray-100 font-serif">
+        {scenario.title}
+      </h1>
+      <p class="mt-2 text-base text-gray-600 dark:text-gray-300 leading-relaxed">
+        {scenario.subtitle}
+      </p>
+    </div>
+
+    {/* 8 个紧急场景切换标签 */}
+    <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+      {allScenarios.map((sc) => (
+        <a
+          href={`/scenario/${sc.id}/`}
+          class={`px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all ${
+            sc.id === scenario.id
+              ? 'bg-red-600 text-white shadow-sm'
+              : 'bg-white dark:bg-[#12141a] text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white border border-gray-200/80 dark:border-gray-800'
+          }`}
+        >
+          {sc.title}
+        </a>
+      ))}
+    </div>
+
+    {/* 事前验尸防线：致命陷阱与一票否决红线 (Pre-Mortem Inversion) */}
+    {antiPlaybook && antiPlaybook.length > 0 && (
+      <div class="p-6 rounded-2xl border border-rose-200 dark:border-rose-900/60 bg-rose-50/40 dark:bg-rose-950/20 space-y-3">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">🛡️</span>
+            <h3 class="text-base font-bold text-gray-900 dark:text-gray-100 font-serif">
+              事前验尸防线 · 致命误区与一票否决红线 (Pre-Mortem Inversion)
+            </h3>
+          </div>
+          <span class="text-[11px] font-bold text-rose-600 dark:text-rose-400">
+            逆向思维：先确保不被杀死
+          </span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+          {antiPlaybook.map((ap) => (
+            <div class="p-4 rounded-xl bg-white/90 dark:bg-[#12141a] border border-rose-200/60 dark:border-rose-900/40 space-y-2 text-xs">
+              <div class="font-bold text-rose-700 dark:text-rose-300">
+                ❌ 致命陷阱：{ap.trap}
+              </div>
+              <div class="text-gray-500 leading-relaxed text-[11px]">
+                {ap.mechanism}
+              </div>
+              <div class="p-2.5 rounded-lg bg-rose-50 dark:bg-rose-950/80 font-bold text-rose-800 dark:text-rose-200 text-[11px] border border-rose-200 dark:border-rose-900/50">
+                {ap.vetoRule}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {/* 时间线交互岛屿 */}
+    <ScenarioTimeline client:load scenario={scenario} stepsWithItems={stepsWithItems} />
+  </div>
+</BaseLayout>

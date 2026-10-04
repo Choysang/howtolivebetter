@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import FocusTimer from '../../../islands/FocusTimer.tsx'
+---
+
+<BaseLayout
+  title="科学心流番茄钟与健康节奏器 · 高性价比人生指南"
+  description="25分钟深度工作与5分钟循证健康复位，结合原书护眼、拉伸与深呼吸建议，打造不透支健康的高效节律。"
+>
+  <div class="max-w-4xl mx-auto space-y-8 py-4">
+    <FocusTimer client:load />
+  </div>
+</BaseLayout>

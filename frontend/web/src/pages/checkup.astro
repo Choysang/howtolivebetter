@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { getCheckupSpec } from '../lib/kb.ts'
+import CheckupWizard from '../islands/CheckupWizard.tsx'
+
+const checkupSpec = getCheckupSpec()
+---
+
+<BaseLayout
+  title="🩺 处境体检 · 高性价比人生指南"
+  description="苏格拉底式提问你的真实生活处境，100% 浏览器客户端本地计算，零数据上传，把无关条目自动折叠。"
+>
+  <div class="space-y-6">
+    <div class="border-b border-gray-200 dark:border-gray-800 pb-4">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300">
+          苏格拉底式处境诊断
+        </span>
+        <span class="text-xs text-gray-400">
+          答案仅保留在浏览器 URL # 之后，刷新不丢失
+        </span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-gray-100 font-serif">
+        真实生活处境体检
+      </h1>
+    </div>
+
+    <CheckupWizard client:load spec={checkupSpec} />
+  </div>
+</BaseLayout>

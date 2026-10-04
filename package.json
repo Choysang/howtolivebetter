@@ -1,0 +1,18 @@
+{
+  "name": "howtolivebetter",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "把《高性价比人生指南》按人生阶段重排的本地优先站点：阶段手册 · 处境体检 · 场景指南 · 每日打卡",
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "sync": "node ops/sync.ts",
+    "sync:watch": "node ops/sync.ts --watch --interval 3600",
+    "build:kb": "node ops/build-kb.ts",
+    "build": "node ops/build.ts",
+    "dev": "node ops/dev.ts",
+    "preview": "node ops/serve.ts frontend/web/dist",
+    "test": "node --test \"ops/test/*.test.ts\"",
+    "check": "node --test \"ops/test/*.test.ts\" && node ops/build-kb.ts --idempotency-gate"
+  }
+}

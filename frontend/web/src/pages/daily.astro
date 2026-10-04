@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { getItems, getChapters } from '../lib/kb.ts'
+import DailyFortuneIsland from '../islands/DailyFortuneIsland.tsx'
+
+const allItems = getItems()
+const chapters = getChapters()
+const chapterMap = new Map(chapters.map((c) => [c.n, c.title]))
+
+// 精选适合每日抽签的高杠杆建议（优先 A 级证据与低成本）
+const candidates = allItems
+  .filter((it) => it.source?.evidenceBase === 'A' || it.source?.tags?.money === '0')
+  .slice(0, 80)
+  .map((it) => ({
+    uid: it.uid,
+    title: it.source.title,
+    chapterTitle: chapterMap.get(it.source.chapter) || `第 ${it.source.chapter} 卷`,
+    cost: it.source.tags.money === '0' ? '¥0 (零成本)' : (it.source.cost || '极低'),
+    time: it.source.tags.time || '即刻见效',
+    benefit: it.source.benefit || '长期复利',
+    evidenceLevel: it.source.evidenceBase,
+    summary: it.source.plain,
+  }))
+---
+
+<BaseLayout
+  title="每日微决断抽签 · 高性价比人生指南"
+  description="每日随机抽取一条零成本或高杠杆的生活小事，通过循证依据翻牌验证，从一件微小行动开始反抗内耗与焦虑。"
+>
+  <div class="py-10 sm:py-16 max-w-4xl mx-auto px-4 text-center space-y-4">
+    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#d5ed9e] text-[#12382d]">
+      <span>🎲 每日微决断</span>
+      <span>·</span>
+      <span>把大目标拆成微行动</span>
+    </div>
+
+    <h1 class="text-3xl sm:text-4xl font-serif font-bold text-gray-900 dark:text-white tracking-tight">
+      今天，只做好这一件小事
+    </h1>
+
+    <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
+      不要试图在一天内改变整个人生。基于 UTC+8 每日确定性随机为你指派一条高性价比微行动。点击卡片可翻看循证医学背景。
+    </p>
+
+    <div class="pt-6">
+      <DailyFortuneIsland client:load items={candidates} />
+    </div>
+
+    <div class="pt-10 text-xs text-gray-400 dark:text-gray-500 max-w-md mx-auto">
+      打卡记录仅加密保存在当前浏览器的 localStorage 中，物理级绝对不出设备。明天将为你刷新下一张微决断。
+    </div>
+  </div>
+</BaseLayout>

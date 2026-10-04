@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import { getStages } from '../../lib/kb.ts'
+
+const stages = getStages()
+---
+
+<BaseLayout
+  title="🧭 五个人生阶段手册 · 高性价比人生指南"
+  description="高中生 / 大学生 / 刚工作 / 中年 / 退休前后：把 650+ 条生活建议按生命阶段重排。"
+>
+  <div class="space-y-8">
+    <div class="border-b border-gray-200 dark:border-gray-800 pb-6">
+      <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 mb-2">
+        🧭 人生阶段导航
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-gray-100 font-serif">
+        五大人群生命阶段手册
+      </h1>
+      <p class="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 max-w-2xl leading-relaxed">
+        人按阶段活。每个阶段有人工精选的「此时先做」TOP 5 关键行动与算法加权的性价比精选清单。
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {stages.map((st) => (
+        <a
+          href={`/stage/${st.id}/`}
+          class="p-6 rounded-2xl border border-gray-200/80 dark:border-gray-800 bg-white dark:bg-[#12141a] hover:border-emerald-500 transition-all card-hover-tactile group block space-y-3"
+        >
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono text-gray-400">
+              {st.ages}
+            </span>
+            <span class="text-emerald-600 dark:text-emerald-400 text-sm font-semibold group-hover:translate-x-0.5 transition-transform">
+              进入手册 &rarr;
+            </span>
+          </div>
+
+          <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 group-hover:text-emerald-600 transition-colors">
+            {st.name}
+          </h2>
+
+          <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+            {st.thesis}
+          </p>
+
+          <div class="pt-2 text-[11px] text-gray-400 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between">
+            <span>先做 {st.picks.length} 件事</span>
+            <span>精选 {st.funnel.essence} 条建议</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

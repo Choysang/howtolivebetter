@@ -1,0 +1,113 @@
+---
+import type { Item, LiteItem } from '@contracts/kb.ts'
+import EvidenceBadge from './EvidenceBadge.astro'
+import CostPills from './CostPills.astro'
+
+interface Props {
+  item: Item | LiteItem
+  rank?: number
+  hook?: string
+  withinLabel?: string
+  highlight?: boolean
+  class?: string
+  contextFrom?: 'stage' | 'scenario' | 'checkup' | 'search'
+  contextSrc?: string
+  contextTitle?: string
+}
+
+const {
+  item,
+  rank,
+  hook,
+  withinLabel,
+  highlight = false,
+  class: className = '',
+  contextFrom,
+  contextSrc,
+  contextTitle,
+} = Astro.props
+
+const contextQuery = contextFrom
+  ? `?from=${encodeURIComponent(contextFrom)}&src=${encodeURIComponent(contextSrc || '')}&srcTitle=${encodeURIComponent(contextTitle || '')}`
+  : ''
+const detailUrl = `/q/${item.uid}/${contextQuery}`
+
+const isFullItem = 'source' in item
+const title = isFullItem ? item.source.title : item.title
+const chapter = isFullItem ? item.source.chapter : item.chapter
+const index = isFullItem ? item.source.index : item.index
+const evidence = isFullItem ? item.source.evidence : item.evidence
+const evidenceBase = isFullItem ? item.source.evidenceBase : item.evidenceBase
+const disputed = isFullItem ? item.source.flags.disputed : item.flags.disputed
+const unverified = isFullItem ? item.source.flags.unverified : item.flags.unverified
+const tags = isFullItem ? item.source.tags : item.tags
+const plain = isFullItem ? item.source.plain : ''
+const benefit = isFullItem ? item.source.benefit : ''
+---
+
+<div class={`group relative p-5 rounded-xl border bg-white dark:bg-[#12141a] transition-all card-hover-tactile ${
+  highlight 
+    ? 'border-emerald-300 dark:border-emerald-700/80 shadow-sm ring-1 ring-emerald-500/10' 
+    : 'border-gray-200/80 dark:border-gray-800'
+} ${className}`}>
+  <div class="flex items-start justify-between gap-3 mb-2.5">
+    <div class="flex items-center gap-2 flex-wrap">
+      {rank !== undefined && (
+        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 text-xs font-bold font-mono">
+          {rank}
+        </span>
+      )}
+      <a 
+        href={detailUrl}
+        class="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+      >
+        #{item.uid}
+      </a>
+      <EvidenceBadge evidence={evidence} evidenceBase={evidenceBase} disputed={disputed} unverified={unverified} />
+      {withinLabel && (
+        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-50 text-red-700 dark:bg-red-950/60 dark:text-red-300 border border-red-200 dark:border-red-900/50">
+          ⏳ {withinLabel}
+        </span>
+      )}
+    </div>
+    <div class="flex items-center gap-1.5 min-h-[20px]">
+      <span data-fav-badge={item.uid} class="hidden items-center text-[10px] font-medium px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-700/60 transition-opacity duration-150">
+        ★ 已收藏
+      </span>
+      <span data-read-badge={item.uid} class="hidden items-center text-[10px] font-medium px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200/60 dark:border-gray-700/60 transition-opacity duration-150">
+        ✓ 已读
+      </span>
+      <span class="text-[11px] text-gray-400 dark:text-gray-500 whitespace-nowrap ml-1">
+        第{chapter}章 · {index}
+      </span>
+    </div>
+  </div>
+
+  <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-gray-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors leading-snug">
+    <a href={detailUrl} class="focus:outline-none">
+      {title}
+    </a>
+  </h3>
+
+  {hook && (
+    <div class="mt-2.5 p-2.5 rounded-lg bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/40 text-xs sm:text-sm text-emerald-900 dark:text-emerald-200 leading-relaxed font-medium">
+      💡 <span class="font-semibold">行动关键：</span>{hook}
+    </div>
+  )}
+
+  {!hook && (plain || benefit) && (
+    <p class="mt-2 text-xs sm:text-sm text-gray-600 dark:text-gray-300 line-clamp-2 leading-relaxed">
+      {plain || benefit}
+    </p>
+  )}
+
+  <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between gap-2 flex-wrap">
+    <CostPills tags={tags} />
+    <a 
+      href={detailUrl}
+      class="text-xs font-medium text-emerald-600 dark:text-emerald-400 group-hover:translate-x-0.5 transition-transform inline-flex items-center gap-1"
+    >
+      完整出处与证据 <span aria-hidden="true">&rarr;</span>
+    </a>
+  </div>
+</div>

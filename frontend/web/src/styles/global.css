@@ -1,0 +1,683 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-canvas-deep: oklch(0.12 0.01 260);
+  --color-card-surface: oklch(0.16 0.015 260);
+  --color-card-subtle: oklch(0.20 0.02 260);
+  --color-border-hairline: oklch(0.28 0.02 260 / 0.4);
+
+  --color-grade-a: oklch(0.72 0.17 155);
+  --color-grade-b: oklch(0.78 0.16 75);
+  --color-grade-c: oklch(0.65 0.04 250);
+  --color-dispute: oklch(0.63 0.22 25);
+}
+
+@layer base {
+  :root {
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Noto Sans SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    --font-serif: 'Newsreader', 'Source Serif Pro', 'Songti SC', SimSun, serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    
+    --bg-page: #fbfbfa;
+    --bg-card: #ffffff;
+    --bg-card-muted: #f7f7f5;
+    --fg-main: #14171a;
+    --fg-muted: #57606a;
+    --fg-faint: #8c959f;
+    --border-main: #e8e8e6;
+    --border-focus: #111827;
+
+    /* HowToLiveBetter 自然主义书卷设计令牌 */
+    --htlb-ink: #18372d;
+    --htlb-deep: #12382d;
+    --htlb-moss: #245345;
+    --htlb-paper: #f7f7f0;
+    --htlb-paper-card: #ffffff;
+    --htlb-paper-muted: #eeeee5;
+    --htlb-line: #dce4d5;
+    --htlb-lime: #d5ed9e;
+    --htlb-coral: #eb866d;
+    --htlb-sand: #edece1;
+  }
+
+  .dark {
+    --bg-page: #0c0d10;
+    --bg-card: #14161b;
+    --bg-card-muted: #1a1d24;
+    --fg-main: #f0f2f5;
+    --fg-muted: #9aa2ae;
+    --fg-faint: #5a626e;
+    --border-main: #232731;
+    --border-focus: #f3f4f6;
+
+    /* HowToLiveBetter 暗色书卷令牌 */
+    --htlb-ink: #f0f4ee;
+    --htlb-deep: #0b1a15;
+    --htlb-moss: #1a4235;
+    --htlb-paper: #0c100e;
+    --htlb-paper-card: #131b17;
+    --htlb-paper-muted: #17231e;
+    --htlb-line: #1c352a;
+    --htlb-lime: #a3d95b;
+    --htlb-coral: #f0957f;
+    --htlb-sand: #182820;
+  }
+
+  body {
+    background-color: var(--bg-page);
+    color: var(--fg-main);
+    font-family: var(--font-sans);
+    letter-spacing: -0.011em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background-color: rgba(16, 185, 129, 0.2);
+    color: inherit;
+  }
+}
+
+/* 优雅排版与正文样式 */
+.prose-editorial {
+  line-height: 1.82;
+  font-size: 1.05rem;
+  color: var(--fg-main);
+}
+
+.prose-editorial p {
+  margin-bottom: 1.35em;
+}
+
+.prose-editorial h2 {
+  font-family: var(--font-serif);
+  font-size: 1.65rem;
+  font-weight: 600;
+  margin-top: 2.2em;
+  margin-bottom: 0.8em;
+  letter-spacing: -0.02em;
+}
+
+.prose-editorial h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-top: 1.8em;
+  margin-bottom: 0.6em;
+}
+
+.prose-editorial ul, .prose-editorial ol {
+  margin-left: 1.5em;
+  margin-bottom: 1.35em;
+}
+
+.prose-editorial li {
+  margin-bottom: 0.5em;
+  list-style-type: square;
+}
+
+.prose-editorial code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background-color: rgba(120, 130, 145, 0.12);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+}
+
+.prose-editorial pre {
+  background-color: var(--bg-card-muted);
+  border: 1px solid var(--border-main);
+  border-radius: 8px;
+  padding: 1.2em;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  margin-bottom: 1.5em;
+}
+
+.prose-editorial blockquote {
+  border-left: 3px solid #10b981;
+  padding-left: 1.2em;
+  color: var(--fg-muted);
+  margin-left: 0;
+  margin-bottom: 1.35em;
+  font-style: italic;
+}
+
+/* 交互卡片悬浮质感 */
+.card-hover-tactile {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.22s ease;
+}
+
+.card-hover-tactile:hover {
+  transform: translateY(-3px);
+  border-color: rgba(16, 185, 129, 0.5);
+  box-shadow: 0 14px 30px -8px rgba(0, 0, 0, 0.06), 0 8px 12px -6px rgba(16, 185, 129, 0.08);
+}
+
+.dark .card-hover-tactile:hover {
+  border-color: rgba(16, 185, 129, 0.45);
+  box-shadow: 0 14px 30px -8px rgba(0, 0, 0, 0.6), 0 0 20px -5px rgba(16, 185, 129, 0.2);
+}
+
+/* 触感按压弹性反馈 */
+.tactile-press {
+  transition: transform 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.tactile-press:active {
+  transform: scale(0.96);
+}
+
+/* 极光微光环境背景 */
+.ambient-aurora {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  opacity: 0.6;
+}
+
+.dark .ambient-aurora {
+  opacity: 0.85;
+}
+
+.aurora-orb-1 {
+  position: absolute;
+  top: -15%;
+  left: 15%;
+  width: 55vw;
+  height: 55vw;
+  max-width: 650px;
+  max-height: 650px;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, rgba(16, 185, 129, 0) 70%);
+  filter: blur(60px);
+  animation: aurora-float 20s infinite alternate ease-in-out;
+}
+
+.aurora-orb-2 {
+  position: absolute;
+  top: 10%;
+  right: 10%;
+  width: 45vw;
+  height: 45vw;
+  max-width: 500px;
+  max-height: 500px;
+  background: radial-gradient(circle, rgba(217, 119, 6, 0.08) 0%, rgba(217, 119, 6, 0) 70%);
+  filter: blur(70px);
+  animation: aurora-float 24s infinite alternate-reverse ease-in-out;
+}
+
+.dark .aurora-orb-1 {
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0) 70%);
+}
+
+.dark .aurora-orb-2 {
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0) 70%);
+}
+
+@keyframes aurora-float {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, 30px) scale(1.1); }
+  100% { transform: translate(-30px, 50px) scale(0.95); }
+}
+
+/* 3D 翻转卡片 */
+.perspective-1000 {
+  perspective: 1000px;
+}
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+}
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* 顶部流线滚动条 */
+#scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2.5px;
+  background: linear-gradient(90deg, #10b981 0%, #059669 45%, #f59e0b 100%);
+  z-index: 9999;
+  width: 0%;
+  transition: width 0.08s ease-out;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+}
+
+/* 动效淡入上升 */
+.animate-fade-up {
+  animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 自定义微细滚动条 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(150, 160, 175, 0.25);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(150, 160, 175, 0.45);
+}
+
+/* ==========================================================================
+   2026 COSMIC DARK × LIQUID GLASS 3.0 × PRISM OPTICS
+   ========================================================================== */
+
+/* Liquid Glass 3.0 流体玻璃态 */
+.liquid-glass {
+  background: rgba(20, 22, 27, 0.72);
+  backdrop-filter: blur(20px) saturate(190%);
+  -webkit-backdrop-filter: blur(20px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    0 12px 32px -8px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* 柯西色散折射边缘微光 (Prism Halo) */
+.prism-border {
+  position: relative;
+}
+.prism-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  /* 遵循柯西色散波长序列：紫蓝 (420nm) -> 冰青 (490nm) -> 翡翠 (530nm) -> 琥珀 (590nm) -> 暖赤 (650nm) */
+  background: linear-gradient(
+    135deg,
+    oklch(0.75 0.18 290 / 0.45) 0%,
+    oklch(0.78 0.16 220 / 0.35) 25%,
+    oklch(0.76 0.17 155 / 0.40) 50%,
+    oklch(0.82 0.16 75 / 0.45) 75%,
+    oklch(0.70 0.22 30 / 0.30) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.65;
+  transition: opacity 0.3s ease;
+}
+.prism-border:hover::before {
+  opacity: 1;
+}
+
+/* 触觉弹簧微物理反馈 (Tactile Spring Physics) */
+.tactile-spring {
+  transition: transform 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+              box-shadow 0.22s ease,
+              border-color 0.22s ease;
+}
+.tactile-spring:hover {
+  transform: translateY(-2.5px) scale(1.008);
+}
+.tactile-spring:active {
+  transform: translateY(1px) scale(0.985);
+}
+
+/* 宇宙暗黑动态环境光斑 (Cosmic Ambient Mesh) */
+.cosmic-ambient {
+  background: 
+    radial-gradient(circle at 15% 15%, rgba(16, 185, 129, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 85% 25%, rgba(245, 158, 11, 0.06) 0%, transparent 40%),
+    radial-gradient(circle at 50% 80%, rgba(56, 189, 248, 0.05) 0%, transparent 50%);
+}
+
+/* =========================================================================
+   2026 殿堂级单行流体排版（Fluid Monumental Typography）
+/* =========================================================================
+   2026 殿堂级单行流体排版（Fluid Monumental Typography）
+   容器查询 (cqi) + CJK 标点挤压 + 超小视口（320px~375px）绝对单行零溢出安全垫
+   ========================================================================= */
+.hero-headline-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  container-type: inline-size;
+  container-name: hero-headline;
+}
+
+.mega-monumental-headline {
+  font-family: var(--font-serif);
+  font-weight: 850;
+  line-height: 1.15;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  
+  /* CJK 标点挤压与微距紧凑算法：消除全角逗号与句号空隙，凝练如石刻文献 */
+  font-feature-settings: "palt" 1, "kern" 1;
+  font-variant-east-asian: proportional-widths;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+  text-wrap: nowrap;
+  overflow: visible;
+
+  /* 基于容器内联宽度的流体排版：在 320px 下收敛至 1.05rem (约16.8px)，排版物理宽度 260px < 272px，绝无横向溢出 */
+  font-size: clamp(0.95rem, 5.2cqi, 4.25rem);
+}
+
+@supports not (container-type: inline-size) {
+  .mega-monumental-headline {
+    font-size: clamp(0.95rem, 4.5vw, 4.25rem);
+  }
+}
+
+/* 针对折叠屏外屏与超小视口（< 330px 容器宽）的超紧凑安全垫 */
+@container hero-headline (max-width: 330px) {
+  .mega-monumental-headline {
+    font-size: clamp(0.85rem, 5.6cqi, 1.05rem);
+    letter-spacing: -0.045em;
+  }
+}
+
+@media (min-width: 640px) {
+  .mega-monumental-headline {
+    font-size: clamp(1.85rem, 3.8vw + 0.2rem, 3.85rem);
+    letter-spacing: -0.035em;
+  }
+}
+
+@media (min-width: 1280px) {
+  .mega-monumental-headline {
+    font-size: clamp(3.2rem, 3.8vw, 4.25rem);
+    letter-spacing: -0.038em;
+  }
+}
+
+/* =========================================================================
+   2026 Liquid Glass & Reactive Spotlight 卡片微光与空间相变系统
+   ========================================================================= */
+.spotlight-card {
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+  position: relative;
+  overflow: hidden;
+}
+
+.spotlight-glow {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  background: radial-gradient(
+    280px circle at var(--mouse-x) var(--mouse-y),
+    rgba(16, 185, 129, 0.16),
+    transparent 70%
+  );
+  z-index: 1;
+}
+
+.spotlight-card:hover .spotlight-glow {
+  opacity: 1;
+}
+
+/* 粒子相变注入时产生的微波共振 */
+.spotlight-card.dock-pulsing {
+  animation: cardDockPulse 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes cardDockPulse {
+  0% {
+    transform: scale(0.975);
+    border-color: rgba(16, 185, 129, 0.85);
+    box-shadow: 0 0 25px rgba(16, 185, 129, 0.45);
+  }
+  50% {
+    transform: scale(1.025);
+    border-color: rgba(245, 158, 11, 0.6);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: none;
+  }
+}
+
+/* =========================================================================
+   HowToLiveBetter 自然主义书卷设计系统组件
+   ========================================================================= */
+
+/* 品牌矩形标牌：41px 高度，Georgia 衬线，右上角青柠星号 */
+.life-brand-mark {
+  height: 41px;
+  background-color: var(--htlb-deep);
+  color: #ffffff;
+  font-family: 'Newsreader', Georgia, 'Songti SC', serif;
+  font-size: 21px;
+  font-weight: 700;
+  padding: 0 14px;
+  border-radius: 9px;
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  letter-spacing: -0.02em;
+  user-select: none;
+  box-shadow: 0 2px 8px rgba(18, 56, 45, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.life-brand-mark:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(18, 56, 45, 0.35);
+}
+
+.life-brand-mark .life-asterisk {
+  color: var(--htlb-lime);
+  font-size: 13px;
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  line-height: 1;
+}
+
+/* 青柠跑马走字带 */
+.life-intro-band {
+  background-color: var(--htlb-lime);
+  color: #12382d;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 600;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 12px 0;
+  border-top: 1px solid rgba(18, 56, 45, 0.12);
+  border-bottom: 1px solid rgba(18, 56, 45, 0.12);
+}
+
+.life-intro-track {
+  display: inline-flex;
+  animation: introMarquee 35s linear infinite;
+  gap: 2rem;
+}
+
+@keyframes introMarquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* 双层斜切卡片甲板 (Card Deck) 几何学 */
+.life-hero-card-deck {
+  position: relative;
+  perspective: 1000px;
+}
+
+.life-hero-card-deck::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 1.25rem;
+  background: #abc394;
+  transform: rotate(-4deg);
+  z-index: 1;
+  box-shadow: 0 10px 25px -5px rgba(24, 55, 45, 0.12);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.life-hero-card-deck::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 1.25rem;
+  background: #78987a;
+  transform: rotate(4deg);
+  z-index: 2;
+  box-shadow: 0 10px 25px -5px rgba(24, 55, 45, 0.15);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.life-hero-card-deck:hover::before {
+  transform: rotate(-5.5deg) scale(1.01);
+}
+
+.life-hero-card-deck:hover::after {
+  transform: rotate(5.5deg) scale(1.01);
+}
+
+.dark .life-hero-card-deck::before {
+  background: #1c3d31;
+}
+
+.dark .life-hero-card-deck::after {
+  background: #152d24;
+}
+
+.life-hero-card-top {
+  position: relative;
+  z-index: 3;
+  transform: rotate(0deg);
+  background: var(--htlb-paper-card);
+  border: 1px solid var(--htlb-line);
+  border-radius: 1.25rem;
+  box-shadow: 0 20px 40px -15px rgba(24, 55, 45, 0.2);
+}
+
+/* 按钮系列 */
+.life-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  padding: 0.75rem 1.35rem;
+  border-radius: 9999px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.95rem;
+}
+
+.life-btn-lime {
+  background-color: var(--htlb-lime);
+  color: #12382d;
+  box-shadow: 0 2px 8px rgba(213, 237, 158, 0.4);
+}
+
+.life-btn-lime:hover {
+  background-color: #c9e68c;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(213, 237, 158, 0.55);
+}
+
+.life-btn-deep {
+  background-color: var(--htlb-deep);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(18, 56, 45, 0.3);
+}
+
+.life-btn-deep:hover {
+  background-color: var(--htlb-moss);
+  transform: translateY(-1px);
+}
+
+.life-btn-outline {
+  border: 1px solid var(--htlb-line);
+  background: transparent;
+  color: var(--htlb-ink);
+}
+
+.life-btn-outline:hover {
+  background: var(--htlb-sand);
+  border-color: var(--htlb-moss);
+}
+
+/* 药丸导航项 */
+.life-nav-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--fg-muted);
+  border-radius: 9999px;
+  transition: all 0.18s ease;
+}
+
+.life-nav-link:hover {
+  color: var(--htlb-ink);
+  background-color: var(--htlb-sand);
+}
+
+.life-nav-link.active {
+  color: var(--htlb-deep);
+  background-color: var(--htlb-lime);
+  font-weight: 600;
+}
+
+/* 声音开关胶囊 */
+.life-sound-toggle {
+  width: 36px;
+  height: 36px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--htlb-line);
+  background: var(--htlb-paper);
+  color: var(--htlb-ink);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.life-sound-toggle:hover {
+  background: var(--htlb-sand);
+  transform: scale(1.05);
+}
+
+.life-sound-toggle.muted {
+  opacity: 0.55;
+  color: var(--fg-muted);
+}
+
+

@@ -1,0 +1,18 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@kernel/*": ["../../kernel/*"],
+      "@contracts/*": ["../../contracts/*"],
+      "@lib/*": ["src/lib/*"],
+      "@islands/*": ["src/islands/*"],
+      "@components/*": ["src/components/*"]
+    }
+  },
+  "include": ["src/**/*", "../../kernel/**/*", "../../contracts/**/*"]
+}

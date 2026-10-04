@@ -1,0 +1,218 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import { getStages, getItemsMap, getChapters } from '../../lib/kb.ts'
+import ItemCard from '../../components/ItemCard.astro'
+
+export function getStaticPaths() {
+  const stages = getStages()
+  return stages.map((stage) => ({
+    params: { id: stage.id },
+    props: { stage },
+  }))
+}
+
+const { stage } = Astro.props
+const allStages = getStages()
+const itemsMap = getItemsMap()
+const allChapters = getChapters()
+
+const STAGE_CHAPTERS: Record<string, { core: number[]; related: number[] }> = {
+  hs: { core: [1, 2, 3, 4, 31, 23, 13, 28], related: [32, 6, 34, 10, 14] },
+  college: { core: [31, 32, 23, 14, 4, 3, 9, 7], related: [1, 2, 10, 12, 26] },
+  early: { core: [19, 15, 5, 7, 9, 13, 14, 22], related: [10, 6, 23, 12, 21] },
+  mid: { core: [8, 16, 17, 18, 20, 24, 29], related: [5, 7, 10, 25, 27] },
+  retire: { core: [8, 10, 21, 24, 25, 30], related: [1, 2, 6, 26] },
+}
+
+const chaptersSpec = stage.chapters ?? STAGE_CHAPTERS[stage.id] ?? { core: [], related: [] }
+const coreChapters = chaptersSpec.core.map((n) => allChapters.find((c) => c.n === n)).filter(Boolean)
+const relatedChapters = chaptersSpec.related.map((n) => allChapters.find((c) => c.n === n)).filter(Boolean)
+
+const picksItems = stage.picks.map((uid) => itemsMap.get(uid)!).filter(Boolean)
+const essenceItems = stage.essence.map((e) => ({
+  item: itemsMap.get(e.uid)!,
+  score: e.score,
+})).filter((x) => !!x.item)
+
+// 漏斗深度统计指标
+const allStageItems = Array.from(itemsMap.values()).filter((it) => {
+  const tier = it.derived.stageTiers?.[stage.id]
+  return tier === 'core' || tier === 'related'
+})
+const totalRelatedCount = allStageItems.length || stage.funnel.related
+const zeroCostCount = allStageItems.filter((it) => it.source.tags.money === '0').length
+const gradeACount = allStageItems.filter((it) => it.source.evidenceBase === 'A').length
+const filteredOutCount = Math.max(0, (stage.funnel.total || 630) - totalRelatedCount)
+---
+
+<BaseLayout
+  title={`${stage.name}阶段手册 · 高性价比人生指南`}
+  description={stage.thesis}
+>
+  {/* 阶段顶栏 */}
+  <div class="space-y-6">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-gray-200 dark:border-gray-800 pb-6">
+      <div>
+        <div class="flex items-center gap-2 mb-2">
+          <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300">
+            人生阶段手册
+          </span>
+          <span class="text-xs font-mono text-gray-400">
+            {stage.ages}
+          </span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-gray-100 font-serif">
+          {stage.name}
+        </h1>
+        <p class="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-300 max-w-3xl leading-relaxed">
+          {stage.thesis}
+        </p>
+
+        {/* 漏斗直观统计 Chips */}
+        <div class="mt-4 flex items-center gap-2 flex-wrap text-xs">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 font-medium border border-emerald-200/60 dark:border-emerald-800/60">
+            <strong class="font-mono text-sm">{totalRelatedCount}</strong> 条与本阶段高度相关
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 font-medium border border-blue-200/60 dark:border-blue-800/60">
+            <strong class="font-mono text-sm">{zeroCostCount}</strong> 条零金钱成本
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 font-medium border border-amber-200/60 dark:border-amber-800/60">
+            <strong class="font-mono text-sm">{gradeACount}</strong> 条 A 级最高循证
+          </span>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-medium border border-gray-200/60 dark:border-gray-700/60">
+            🛡️ 为你过滤 <strong class="font-mono text-sm text-gray-800 dark:text-gray-200">{filteredOutCount}</strong> 条当下无关杂音
+          </span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 shrink-0 text-xs text-gray-400 bg-gray-50 dark:bg-gray-850 p-3 rounded-xl border border-gray-200/60 dark:border-gray-700/60 self-start sm:self-auto">
+        <div>此时先做 <strong class="text-emerald-600 dark:text-emerald-400 font-mono text-sm">{picksItems.length}</strong> 件</div>
+        <span>•</span>
+        <div>精选建议 <strong class="text-emerald-600 dark:text-emerald-400 font-mono text-sm">{stage.funnel.essence}</strong> 条</div>
+      </div>
+    </div>
+
+    {/* 五大阶段无缝切换标签 */}
+    <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+      {allStages.map((st) => (
+        <a
+          href={`/stage/${st.id}/`}
+          class={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all ${
+            st.id === stage.id
+              ? 'bg-emerald-600 text-white shadow-sm'
+              : 'bg-white dark:bg-[#12141a] text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white border border-gray-200/80 dark:border-gray-800'
+          }`}
+        >
+          {st.name} <span class="opacity-70 text-xs font-normal">({st.ages.replace('约 ', '')})</span>
+        </a>
+      ))}
+    </div>
+  </div>
+
+  {/* 第一部分：⚡ 此时先做 TOP 5 */}
+  <section class="mt-12 space-y-6">
+    <div class="flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 pb-3">
+      <span class="text-xl">⚡</span>
+      <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 font-serif">
+        此时先做 · 关键行动
+      </h2>
+      <span class="text-xs text-gray-400 ml-2">
+        优先级最高 · 顺序颠倒会有长远代价
+      </span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {picksItems.map((item, idx) => (
+        <ItemCard 
+          item={item} 
+          rank={idx + 1} 
+          highlight={idx === 0} 
+          contextFrom="stage"
+          contextSrc={stage.id}
+          contextTitle={stage.name}
+        />
+      ))}
+    </div>
+  </section>
+
+  {/* 第二部分：📊 按性价比排序的精华清单 */}
+  <section class="mt-16 space-y-6">
+    <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 pb-3 flex-wrap gap-2">
+      <div class="flex items-center gap-2">
+        <span class="text-xl">📊</span>
+        <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 font-serif">
+          性价比精选清单 ({essenceItems.length} 条)
+        </h2>
+      </div>
+      <div class="text-xs text-gray-400">
+        纯算法打分：证据强度 × 阶段相关度 ÷ 成本
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {essenceItems.map(({ item }, idx) => (
+        <ItemCard 
+          item={item} 
+          rank={idx + 1} 
+          contextFrom="stage"
+          contextSrc={stage.id}
+          contextTitle={stage.name}
+        />
+      ))}
+    </div>
+  </section>
+
+  {/* 第三部分：📚 关联全书章节网格 */}
+  <section class="mt-16 space-y-6">
+    <div class="border-b border-gray-200 dark:border-gray-800 pb-3">
+      <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 font-serif">
+        📚 本阶段关联原书章节
+      </h2>
+      <p class="text-xs text-gray-400 mt-0.5">深入探索特定领域的原始理论与全书上下文</p>
+    </div>
+
+    <div class="space-y-4">
+      <div>
+        <div class="text-xs font-semibold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider mb-2">
+          核心聚焦章节 ({coreChapters.length})
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+          {coreChapters.map((ch) => (
+            ch && (
+              <a
+                href={`/chapter/${ch.n}/`}
+                class="p-3 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#12141a] hover:border-emerald-500 transition-colors text-xs space-y-1 block card-hover-tactile"
+              >
+                <div class="text-gray-400 font-mono">第 {ch.n} 章</div>
+                <div class="font-bold text-gray-900 dark:text-gray-100 truncate">{ch.title}</div>
+                <div class="text-[11px] text-gray-400">{ch.uids.length} 条建议</div>
+              </a>
+            )
+          ))}
+        </div>
+      </div>
+
+      {relatedChapters.length > 0 && (
+        <div class="pt-2">
+          <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+            相关拓展章节 ({relatedChapters.length})
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            {relatedChapters.map((ch) => (
+              ch && (
+                <a
+                  href={`/chapter/${ch.n}/`}
+                  class="p-3 rounded-xl border border-gray-200/60 dark:border-gray-800/80 bg-gray-50/50 dark:bg-gray-900/40 hover:border-gray-400 transition-colors text-xs space-y-1 block"
+                >
+                  <div class="text-gray-400 font-mono">第 {ch.n} 章</div>
+                  <div class="font-semibold text-gray-800 dark:text-gray-200 truncate">{ch.title}</div>
+                  <div class="text-[11px] text-gray-400">{ch.uids.length} 条建议</div>
+                </a>
+              )
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,93 @@
+---
+import { getManifest } from '../lib/kb.ts'
+
+const manifest = getManifest()
+const { counts, upstream, attribution } = manifest
+---
+
+<footer class="mt-24 border-t border-gray-200/80 dark:border-gray-800 bg-gray-50/50 dark:bg-[#0c0d10] text-xs text-gray-500 dark:text-gray-400">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12 space-y-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+      {/* 栏目 1：项目哲学 */}
+      <div class="space-y-3 md:col-span-2">
+        <div class="font-bold text-gray-900 dark:text-gray-100 text-sm">
+          《高性价比人生指南》· 现代重排版
+        </div>
+        <p class="text-xs leading-relaxed max-w-md">
+          原书按主题写，人按阶段活。本站将开源知识库重排为五个阶段手册、处境体检、紧急时刻与每日习惯，原文一字未改，科学证据全量保留。
+        </p>
+        <div class="text-[11px] text-gray-400 leading-normal">
+          数据纯本地计算 · 零用户状态上传 · 
+          基于 <a href={attribution.licenseUrl} target="_blank" rel="noopener" class="underline hover:text-emerald-500">{attribution.license}</a> 共享。
+        </div>
+      </div>
+
+      {/* 栏目 2：核心入口 */}
+      <div class="space-y-2">
+        <div class="font-semibold text-gray-900 dark:text-gray-200 text-xs uppercase tracking-wider">
+          快速入口
+        </div>
+        <ul class="space-y-1.5 text-xs">
+          <li><a href="/stage/early/" class="hover:text-emerald-600 transition-colors">🧭 刚工作阶段手册</a></li>
+          <li><a href="/checkup/" class="hover:text-emerald-600 transition-colors">🩺 苏格拉底处境体检</a></li>
+          <li><a href="/scenario/laid-off/" class="hover:text-emerald-600 transition-colors">⚡ 紧急时刻：被裁了</a></li>
+          <li><a href="/scenario/owed-wages/" class="hover:text-emerald-600 transition-colors">⚡ 紧急时刻：被欠薪</a></li>
+          <li><a href="/checkin/" class="hover:text-emerald-600 transition-colors">✅ 每日打卡（17件小事）</a></li>
+          <li><a href="/search/" class="hover:text-emerald-600 transition-colors">🔍 全量建议检索库</a></li>
+        </ul>
+      </div>
+
+      {/* 栏目 3：溯源与机器面 */}
+      <div class="space-y-2">
+        <div class="font-semibold text-gray-900 dark:text-gray-200 text-xs uppercase tracking-wider">
+          透明度与机器面
+        </div>
+        <ul class="space-y-1.5 text-xs">
+          <li><a href="/about/method/" class="hover:text-emerald-600 transition-colors">📊 排序算法与循证评级</a></li>
+          <li><a href="/about/" class="hover:text-emerald-600 transition-colors">📖 关于理念与隐私白皮书</a></li>
+          <li><a href="/llms.txt" class="font-mono hover:text-emerald-600 transition-colors">🤖 llms.txt (AI 精简索引)</a></li>
+          <li><a href="/llms-full.txt" class="font-mono hover:text-emerald-600 transition-colors">📄 llms-full.txt (完整语料)</a></li>
+          <li>
+            <a 
+              href={upstream.repo} 
+              target="_blank" 
+              rel="noopener"
+              class="hover:text-emerald-600 transition-colors inline-flex items-center gap-1"
+            >
+              ⭐ 上游仓库 GitHub &rarr;
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    {/* 底部元数据条：全部来自知识包 manifest，不手写数字 */}
+    <div class="pt-8 border-t border-gray-200/60 dark:border-gray-800/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-[11px] text-gray-400">
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
+        <span>全库统计：<strong>{counts.items}</strong> 条建议</span>
+        <span>•</span>
+        <span><strong>{counts.chapters}</strong> 个章节</span>
+        <span>•</span>
+        <span><strong>{counts.refs}</strong> 篇科学文献</span>
+        <span>•</span>
+        <span>A级证据 {counts.evidenceA} / B级 {counts.evidenceB} / C级 {counts.evidenceC}</span>
+        <span>•</span>
+        <span>争议 {counts.disputed} / 待核实 {counts.unverified}</span>
+      </div>
+
+      <div class="flex items-center gap-2 font-mono">
+        <span>upstream @</span>
+        <a 
+          href={`${upstream.repo.replace(/\.git$/, '')}/commit/${upstream.commit}`}
+          target="_blank"
+          rel="noopener"
+          class="hover:text-emerald-500 underline"
+        >
+          {upstream.commitShort}
+        </a>
+        <span>·</span>
+        <span>kb:{manifest.hash.slice(0, 8)}</span>
+      </div>
+    </div>
+  </div>
+</footer>

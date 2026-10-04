@@ -1,0 +1,69 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+---
+
+<BaseLayout
+  title="排序算法与循证评级规范 · 高性价比人生指南"
+  description="了解本站的性价比计算公式、A/B/C 证据等级划分标准与编辑层权重机制。"
+>
+  <div class="space-y-10 max-w-3xl mx-auto">
+    <div class="border-b border-gray-200 dark:border-gray-800 pb-6">
+      <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300">
+        算法与方法论透明度
+      </span>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-gray-100 font-serif mt-3">
+        排序打分公式与循证评级
+      </h1>
+    </div>
+
+    <div class="prose-editorial text-gray-700 dark:text-gray-300 space-y-6 text-sm sm:text-base leading-relaxed">
+      <p>
+        为了确保公正与透明，站方所有的排序与筛选逻辑均公开开源，不包含任何商业推广或黑盒加权。
+      </p>
+
+      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 font-serif pt-4">
+        1. 证据等级划分标准（Evidence Base）
+      </h2>
+
+      <ul>
+        <li>
+          <strong>Grade A（强证据）</strong>：基于大规模随机双盲对照试验（RCT）、高质量 Cochrane 系统综述、权威跨国公共卫生指南，或国家现行有效法律行政法规明确规定。
+        </li>
+        <li>
+          <strong>Grade B（中等证据）</strong>：基于大规模前瞻性队列研究、经典观察性流行病学调查、或行业高级专家共识。
+        </li>
+        <li>
+          <strong>Grade C（机制推断/经验法则）</strong>：基于基础生物学/物理学机制推导、专家经验或个案研究。
+        </li>
+        <li>
+          <strong>学术争议（Disputed）</strong>：不同顶尖研究中心或不同法域存在重大分歧的条目。<strong>争议条目不进入默认高分榜单，但详情页原汁原味呈现争论要点</strong>。
+        </li>
+        <li>
+          <strong>待核实（Unverified）</strong>：原书作者标记为数据源有待更新的条目。
+        </li>
+      </ul>
+
+      <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 font-serif pt-4">
+        2. 性价比打分公式（Score Calculation）
+      </h2>
+
+      <p>
+        每个条目的综合推荐分由 <code>kernel/rank.ts</code> 计算：
+      </p>
+
+      <pre><code>Score = 收益基准分 (Benefit × 10)
+      + 证据强度加成 (A: +8, B: +4, C: +0)
+      + 阶段核心加成 (Core: +15, Related: +6)
+      - 成本与门槛惩罚 (Money + Time + Willpower)</code></pre>
+
+      <p>
+        <strong>核心数学性质保证：</strong>
+      </p>
+      <ul>
+        <li>在相同收益下，证据等级越高，得分绝对不降；</li>
+        <li>零金钱、极少时间的条目获得天然的「高性价比」排位优势；</li>
+        <li>涉及敏感心理危机或争议的条目，绝不混入算法榜单，保障读者的心理安全。</li>
+      </ul>
+    </div>
+  </div>
+</BaseLayout>

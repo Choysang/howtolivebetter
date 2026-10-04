@@ -1,0 +1,208 @@
+---
+interface Props {
+  currentPath?: string
+}
+
+import LivingLogo from '../islands/LivingLogo'
+import SoundToggle from '../islands/SoundToggle'
+
+const { currentPath = '' } = Astro.props
+
+const navLinks = [
+  { href: '/stage/early/', label: '🧭 阶段手册', match: '/stage', hasDropdown: 'stage' },
+  { href: '/scenario/laid-off/', label: '⚡ 紧急时刻', match: '/scenario' },
+  { href: '/daily/', label: '🎲 每日抽签', match: '/daily' },
+  { href: '/bingo/', label: '🎯 零元九宫格', match: '/bingo' },
+  { href: '/top-50/', label: '⭐ 精选50', match: '/top-50' },
+  { href: '/dashboard/', label: '📊 个人看板', match: '/dashboard' },
+  { href: '/tools/habits/', label: '🛠️ 工具箱', match: '/tools', hasDropdown: 'tools' },
+  { href: '/search/', label: '📖 654条检索', match: '/search' },
+]
+
+const stageItems = [
+  { href: '/stage/hs/', title: '🎓 高中生', desc: '15–18 岁 · 填报志愿与习惯底线' },
+  { href: '/stage/college/', title: '🏫 大学生', desc: '18–22 岁 · 实习试错与技能复利' },
+  { href: '/stage/early/', title: '💼 刚工作', desc: '22–28 岁 · 租房试用期与应急储蓄' },
+  { href: '/stage/mid/', title: '👔 中年期', desc: '28–55 岁 · 婚育养育与资产风控' },
+  { href: '/stage/retire/', title: '🌅 退休前后', desc: '55 岁+ · 养老医保与防诈防骗' },
+]
+
+const toolItems = [
+  { href: '/tools/constitution/', title: '📜 个人生活宪法', desc: '布鲁姆 L6 创造层，端侧生成 MY_CONSTITUTION.md' },
+  { href: '/tools/habits/', title: '🌱 习惯工作台', desc: '追踪连续天数与热力网格，支持备份' },
+  { href: '/tools/focus/', title: '⏳ 科学番茄钟', desc: '25m 专注 + 5m 循证护眼拉伸复位' },
+  { href: '/tools/agent/', title: '🤖 Agent 技能中心', desc: '多层路由分流，导出 Claude/Cursor Skill' },
+  { href: '/checkin/', title: '✅ 每日零成本打卡', desc: '从原书筛选出的 17 件免意志力科学小事' },
+  { href: '/checkup/', title: '🩺 处境体检自测', desc: '17 题本地剪枝折叠无关条目' },
+]
+---
+
+<header class="sticky top-0 z-40 w-full backdrop-blur-md bg-white/90 dark:bg-[#0c100e]/90 border-b border-[#dce4d5] dark:border-[#1c352a] transition-colors">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+    {/* 品牌标识：41px 矩形牌 + Living Compass 动效 */}
+    <div class="flex items-center gap-3">
+      <a href="/" class="life-brand-mark flex-shrink-0" title="返回首页 / 理念总览">
+        <span>H</span>
+        <span class="life-asterisk">✳</span>
+      </a>
+      <a href="/" class="hidden sm:flex items-center" transition:persist="living-compass-logo">
+        <LivingLogo client:idle />
+      </a>
+    </div>
+
+    {/* 核心导航 */}
+    <nav class="hidden lg:flex items-center gap-1">
+      {navLinks.map((link) => {
+        const isActive = currentPath.startsWith(link.match)
+        if (link.hasDropdown === 'stage') {
+          return (
+            <div class="relative group">
+              <a
+                href={link.href}
+                class={`life-nav-link ${isActive ? 'active' : ''}`}
+              >
+                <span>{link.label}</span>
+                <span class="text-[10px] ml-0.5 opacity-60 group-hover:rotate-180 transition-transform">▾</span>
+              </a>
+              {/* 下拉面板 */}
+              <div class="absolute left-0 top-full pt-1.5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
+                <div class="w-64 p-2 bg-white dark:bg-[#131b17] rounded-2xl border border-[#dce4d5] dark:border-[#1c352a] shadow-xl space-y-1">
+                  <div class="px-2.5 py-1 text-[10px] font-semibold text-emerald-800 dark:text-emerald-400 uppercase tracking-wider">
+                    按人生阶段直达
+                  </div>
+                  {stageItems.map((st) => (
+                    <a
+                      href={st.href}
+                      class={`block px-2.5 py-2 rounded-xl text-xs transition-colors ${
+                        currentPath === st.href
+                          ? 'bg-[#d5ed9e]/30 dark:bg-[#1a4235] text-emerald-900 dark:text-emerald-200 font-semibold'
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-[#edece1]/60 dark:hover:bg-[#182820]'
+                      }`}
+                    >
+                      <div class="font-bold">{st.title}</div>
+                      <div class="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">{st.desc}</div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )
+        }
+        if (link.hasDropdown === 'tools') {
+          return (
+            <div class="relative group">
+              <a
+                href={link.href}
+                class={`life-nav-link ${isActive ? 'active' : ''}`}
+              >
+                <span>{link.label}</span>
+                <span class="text-[10px] ml-0.5 opacity-60 group-hover:rotate-180 transition-transform">▾</span>
+              </a>
+              {/* 下拉面板 */}
+              <div class="absolute left-0 top-full pt-1.5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
+                <div class="w-72 p-2 bg-white dark:bg-[#131b17] rounded-2xl border border-[#dce4d5] dark:border-[#1c352a] shadow-xl space-y-1">
+                  <div class="px-2.5 py-1 text-[10px] font-semibold text-emerald-800 dark:text-emerald-400 uppercase tracking-wider">
+                    循证落地工具箱
+                  </div>
+                  {toolItems.map((ti) => (
+                    <a
+                      href={ti.href}
+                      class={`block px-2.5 py-2 rounded-xl text-xs transition-colors ${
+                        currentPath === ti.href
+                          ? 'bg-[#d5ed9e]/30 dark:bg-[#1a4235] text-emerald-900 dark:text-emerald-200 font-semibold'
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-[#edece1]/60 dark:hover:bg-[#182820]'
+                      }`}
+                    >
+                      <div class="font-bold">{ti.title}</div>
+                      <div class="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">{ti.desc}</div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )
+        }
+        return (
+          <a
+            href={link.href}
+            class={`life-nav-link ${isActive ? 'active' : ''}`}
+          >
+            {link.label}
+          </a>
+        )
+      })}
+    </nav>
+
+    {/* 右侧交互区 */}
+    <div class="flex items-center gap-2">
+      {/* 原生程序化微音效开关 */}
+      <SoundToggle client:load />
+
+      {/* Cmd+K 搜索按钮 */}
+      <button
+        type="button"
+        onclick="window.dispatchEvent(new CustomEvent('open-command-palette'))"
+        class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#edece1]/60 dark:bg-[#17231e] text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white border border-[#dce4d5] dark:border-[#1c352a] text-xs transition-colors"
+        title="按 Cmd+K 全局快速检索"
+      >
+        <span>🔍 检索建议</span>
+        <div class="flex items-center gap-1 font-mono text-[10px] text-gray-400">
+          <kbd class="px-1.5 py-0.5 rounded bg-white dark:bg-black border border-gray-300 dark:border-gray-700">⌘K</kbd>
+        </div>
+      </button>
+
+      {/* 搜索小图标（移动端） */}
+      <button
+        type="button"
+        onclick="window.dispatchEvent(new CustomEvent('open-command-palette'))"
+        class="sm:hidden p-2 rounded-full text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800"
+        title="搜索"
+      >
+        🔍
+      </button>
+
+      {/* 深浅模式切换 */}
+      <button
+        id="theme-toggle"
+        type="button"
+        class="p-2 rounded-full text-gray-600 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        title="切换明暗主题"
+      >
+        <span class="dark:hidden">🌙</span>
+        <span class="hidden dark:inline">☀️</span>
+      </button>
+    </div>
+  </div>
+
+  {/* 移动端横向滑动导航 */}
+  <div class="lg:hidden flex items-center gap-1 overflow-x-auto px-4 py-2 border-t border-[#dce4d5] dark:border-[#1c352a] bg-[#f7f7f0]/80 dark:bg-[#0c100e]/80 no-scrollbar text-xs">
+    {navLinks.map((link) => (
+      <a
+        href={link.href}
+        class={`whitespace-nowrap px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${
+          currentPath.startsWith(link.match)
+            ? 'bg-[#d5ed9e] text-[#12382d] font-bold'
+            : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200/50'
+        }`}
+      >
+        {link.label}
+      </a>
+    ))}
+  </div>
+</header>
+
+<script is:inline>
+  const themeToggle = document.getElementById('theme-toggle');
+  themeToggle?.addEventListener('click', () => {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  });
+
+  // 初始化主题检测
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+</script>

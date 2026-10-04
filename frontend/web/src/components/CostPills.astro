@@ -1,0 +1,32 @@
+---
+import type { CostTags } from '@contracts/kb.ts'
+
+interface Props {
+  tags: CostTags
+  costText?: string
+  class?: string
+}
+
+const { tags, costText, class: className = '' } = Astro.props
+
+const moneyLabel = tags.money === '0' ? '零金钱' : tags.money === '少' ? '低花费' : '需投入'
+const timeLabel = tags.time === '少' ? '极少时间' : tags.time === '中' ? '适中时间' : '需长时间'
+const willpowerLabel = tags.willpower === '否' ? '无心智门槛' : tags.willpower === '些' ? '少许意志' : '需自律'
+---
+
+<div class={`inline-flex flex-wrap items-center gap-1.5 text-[11px] text-gray-500 dark:text-gray-400 ${className}`}>
+  <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+    💰 {moneyLabel}
+  </span>
+  <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+    ⏱️ {timeLabel}
+  </span>
+  <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+    🧠 {willpowerLabel}
+  </span>
+  {tags.caliber && (
+    <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-900/60">
+      收益口径: {tags.caliber}
+    </span>
+  )}
+</div>

@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import HabitTracker from '../../../islands/HabitTracker.tsx'
+---
+
+<BaseLayout
+  title="循证个人习惯养成工作台 · 高性价比人生指南"
+  description="从 650+ 条高性价比建议中挑选个人微习惯，追踪连续践行天数与热力网格。物理级零遥测，数据仅存储于浏览器本地，支持 JSON 导出与恢复。"
+>
+  <div class="max-w-4xl mx-auto space-y-8">
+    <HabitTracker client:load />
+  </div>
+</BaseLayout>

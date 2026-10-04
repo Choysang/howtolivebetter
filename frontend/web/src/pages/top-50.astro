@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { getItems, getChapters } from '../lib/kb.ts'
+import Top50TilesIsland from '../islands/Top50TilesIsland.tsx'
+
+const allItems = getItems()
+const chapters = getChapters()
+const chapterMap = new Map(chapters.map((c) => [c.n, c.title]))
+
+// 按二八定律精选全书权重最高的 50 项行动
+// 优先：A 级证据、零成本/极低成本、无争议、高确定性
+const sorted = [...allItems].sort((a, b) => {
+  const evA = a.source?.evidenceBase === 'A' ? 3 : a.source?.evidenceBase === 'B' ? 2 : 1
+  const evB = b.source?.evidenceBase === 'A' ? 3 : b.source?.evidenceBase === 'B' ? 2 : 1
+  if (evB !== evA) return evB - evA
+
+  const costA = a.source?.tags?.money === '0' ? 2 : 1
+  const costB = b.source?.tags?.money === '0' ? 2 : 1
+  return costB - costA
+})
+
+const top50 = sorted.slice(0, 50).map((it, idx) => ({
+  uid: it.uid,
+  rank: idx + 1,
+  title: it.source.title,
+  domain: chapterMap.get(it.source.chapter) || '生活实践',
+  cost: it.source?.tags?.money === '0' ? '¥0 (零成本)' : (it.source.cost || '极低'),
+  benefit: it.source.benefit || '长期复利',
+  evidenceLevel: it.source.evidenceBase,
+}))
+---
+
+<BaseLayout
+  title="精选 50 条高性价比生活实践 · 高性价比人生指南"
+  description="二八定律精选：全书 654 条建议中确定性最高、杠杆最大、成本最低的 50 条核心行动。支持完成度量化与日历批量导出。"
+>
+  <div class="py-10 sm:py-16 max-w-5xl mx-auto px-4 text-center space-y-4">
+    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#d5ed9e] text-[#12382d]">
+      <span>⭐ 二八定律精萃</span>
+      <span>·</span>
+      <span>20% 的行动撬动 80% 的生活质量</span>
+    </div>
+
+    <h1 class="text-3xl sm:text-4xl font-serif font-bold text-gray-900 dark:text-white tracking-tight">
+      精选 50 条高性价比行动清单
+    </h1>
+
+    <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+      如果全书 654 条太多，先看这 50 条。所有条目具备 A 级顶刊循证医学或跨学科统计学支持，聚焦高收益、低门槛与不可逆风险防线。
+    </p>
+
+    <div class="pt-6">
+      <Top50TilesIsland client:load items={top50} />
+    </div>
+
+    <div class="pt-6 text-xs text-gray-400 dark:text-gray-500 max-w-md mx-auto">
+      进度自动保存在本地。点击卡片可在「已做到」、「待做」和「未标记」三态间自由切换。
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0.0",
+  "upstream": {
+    "repo": "https://github.com/eternity4719/HowToLiveBetter.git",
+    "commit": "18de323d94777cb4e880b12ef04d5f7cb9d83f1b",
+    "commitShort": "18de323"
+  },
+  "hash": "4122f0aa64003c5f",
+  "counts": {
+    "items": 654,
+    "chapters": 34,
+    "refs": 1569,
+    "disputed": 65,
+    "unverified": 3,
+    "evidenceA": 429,
+    "evidenceB": 174,
+    "evidenceC": 51,
+    "sensitive": 22,
+    "stages": 5,
+    "scenarios": 8,
+    "checkinItems": 17
+  },
+  "attribution": {
+    "title": "高性价比人生指南（HowToLiveBetter）",
+    "author": "albert4719 与贡献者",
+    "repo": "https://github.com/eternity4719/HowToLiveBetter",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/deed.zh",
+    "derivedNotice": "本站按人生阶段重排并新增编辑层（阶段映射、排序、场景钩子），原文一字未改。"
+  }
+}

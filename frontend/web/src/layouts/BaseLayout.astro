@@ -1,0 +1,230 @@
+---
+import { ClientRouter } from 'astro:transitions'
+import Navbar from '../components/Navbar.astro'
+import Footer from '../components/Footer.astro'
+import CommandPalette from '../islands/CommandPalette'
+import RandomCapsule from '../islands/RandomCapsule'
+import KeyboardShortcutsHUD from '../islands/KeyboardShortcutsHUD'
+import '../styles/global.css'
+
+interface Props {
+  title?: string
+  description?: string
+  class?: string
+}
+
+const {
+  title = '高性价比人生指南 · 原书按主题写，人按阶段活',
+  description = '把 650+ 条高性价比生活建议按人生阶段重排：五个人生阶段手册 · 苏格拉底处境体检 · 紧急时刻行动指南 · 每日零成本打卡',
+  class: className = '',
+} = Astro.props
+
+const currentPath = Astro.url.pathname
+---
+
+<!doctype html>
+<html lang="zh-CN" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    
+    <!-- 本地优先与离线设计规范：依赖本地系统高品质字体栈，零外部网络请求 -->
+    <script is:inline>
+      if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(() => {});
+        });
+      }
+    </script>
+
+    <ClientRouter />
+  </head>
+  <body class="min-h-screen flex flex-col bg-[#fbfbfa] dark:bg-[#0c0d10] text-[#14171a] dark:text-[#f0f2f5] transition-colors duration-150 relative">
+    {/* 顶部流线型阅读进度条 */}
+    <div id="scroll-progress-bar"></div>
+
+    {/* 极光环境微光呼吸背景 */}
+    <div class="ambient-aurora" aria-hidden="true">
+      <div class="aurora-orb-1"></div>
+      <div class="aurora-orb-2"></div>
+    </div>
+
+    <Navbar currentPath={currentPath} />
+
+    <main class={`flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-12 relative z-10 ${className}`}>
+      <slot />
+    </main>
+
+    <Footer />
+
+    {/* 全局命令与搜索悬浮岛屿 */}
+    <CommandPalette client:idle />
+
+    {/* 全局灵感盲盒 3D 翻牌组件 */}
+    <RandomCapsule client:idle />
+
+    {/* 全域快捷键网络 HUD 悬浮岛屿 */}
+    <KeyboardShortcutsHUD client:idle />
+
+    {/* 本地已读与收藏状态管理 + 分享复制（物理级零遥测，仅在客户端 localStorage 运行） */}
+    <script is:inline>
+      function safeGetList(key) {
+        try {
+          const val = JSON.parse(localStorage.getItem(key) || '[]');
+          return Array.isArray(val) ? val.filter(x => typeof x === 'string' && x.length > 0 && x.length < 128) : [];
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function syncUserState() {
+        try {
+          const readList = safeGetList('htlb-read-items');
+          const readSet = new Set(readList);
+          const favList = safeGetList('htlb-fav-items');
+          const favSet = new Set(favList);
+
+          // 更新卡片上的已读徽章
+          document.querySelectorAll('[data-read-badge]').forEach((el) => {
+            const uid = el.getAttribute('data-read-badge');
+            if (uid && readSet.has(uid)) {
+              el.classList.remove('hidden');
+              el.classList.add('inline-flex');
+            } else {
+              el.classList.add('hidden');
+              el.classList.remove('inline-flex');
+            }
+          });
+
+          // 更新卡片上的收藏徽章
+          document.querySelectorAll('[data-fav-badge]').forEach((el) => {
+            const uid = el.getAttribute('data-fav-badge');
+            if (uid && favSet.has(uid)) {
+              el.classList.remove('hidden');
+              el.classList.add('inline-flex');
+            } else {
+              el.classList.add('hidden');
+              el.classList.remove('inline-flex');
+            }
+          });
+
+          // 更新详情页已读按钮
+          const detailReadBtn = document.getElementById('read-toggle-btn');
+          if (detailReadBtn) {
+            const uid = detailReadBtn.getAttribute('data-uid');
+            if (uid && readSet.has(uid)) {
+              detailReadBtn.innerHTML = '✓ 已标记为已读';
+              detailReadBtn.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700 transition-colors inline-flex items-center gap-1.5 cursor-pointer';
+            } else {
+              detailReadBtn.innerHTML = '📖 标记为已读';
+              detailReadBtn.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 transition-colors inline-flex items-center gap-1.5 cursor-pointer';
+            }
+          }
+
+          // 更新详情页收藏按钮
+          const detailFavBtn = document.getElementById('fav-toggle-btn');
+          if (detailFavBtn) {
+            const uid = detailFavBtn.getAttribute('data-uid');
+            if (uid && favSet.has(uid)) {
+              detailFavBtn.innerHTML = '★ 已收藏本条';
+              detailFavBtn.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-700 transition-colors inline-flex items-center gap-1.5 cursor-pointer';
+            } else {
+              detailFavBtn.innerHTML = '☆ 收藏备忘';
+              detailFavBtn.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 transition-colors inline-flex items-center gap-1.5 cursor-pointer';
+            }
+          }
+        } catch (e) {}
+      }
+
+      window.toggleItemRead = function(uid) {
+        if (!uid || typeof uid !== 'string') return;
+        try {
+          let list = safeGetList('htlb-read-items');
+          if (list.includes(uid)) {
+            list = list.filter(id => id !== uid);
+          } else {
+            list.push(uid);
+          }
+          localStorage.setItem('htlb-read-items', JSON.stringify(list));
+          window.dispatchEvent(new CustomEvent('htlb:storage-sync', { detail: { key: 'htlb-read-items' } }));
+          syncUserState();
+        } catch (e) {}
+      };
+
+      window.toggleItemFav = function(uid) {
+        if (!uid || typeof uid !== 'string') return;
+        try {
+          let list = safeGetList('htlb-fav-items');
+          if (list.includes(uid)) {
+            list = list.filter(id => id !== uid);
+          } else {
+            list.push(uid);
+          }
+          localStorage.setItem('htlb-fav-items', JSON.stringify(list));
+          window.dispatchEvent(new CustomEvent('htlb:storage-sync', { detail: { key: 'htlb-fav-items' } }));
+          syncUserState();
+        } catch (e) {}
+      };
+
+      // 复制微信群分享卡片纯文本
+      window.copyShareText = function(btn, text) {
+        try {
+          navigator.clipboard.writeText(text).then(() => {
+            const orig = btn.innerHTML;
+            btn.innerHTML = '✓ 已复制微信分享文案！';
+            btn.classList.add('bg-emerald-600', 'text-white');
+            setTimeout(() => {
+              btn.innerHTML = orig;
+              btn.classList.remove('bg-emerald-600', 'text-white');
+            }, 2000);
+          });
+        } catch (e) {
+          alert('请手动长按复制：\n\n' + text);
+        }
+      };
+
+      let scrollTicking = false;
+      function updateScrollProgress() {
+        const bar = document.getElementById('scroll-progress-bar');
+        if (!bar) return;
+        const total = document.documentElement.scrollHeight - window.innerHeight;
+        const p = total > 0 ? (window.scrollY / total) * 100 : 0;
+        bar.style.width = p + '%';
+        scrollTicking = false;
+      }
+
+      window.addEventListener('scroll', () => {
+        if (!scrollTicking) {
+          requestAnimationFrame(updateScrollProgress);
+          scrollTicking = true;
+        }
+      }, { passive: true });
+
+      // 双向状态总线侦听：无论是 React 岛屿还是 Vanilla 切换，均同步刷新
+      window.addEventListener('htlb:storage-sync', () => syncUserState());
+      window.addEventListener('storage', () => syncUserState());
+
+      document.addEventListener('astro:page-load', () => {
+        syncUserState();
+        updateScrollProgress();
+      });
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          syncUserState();
+          updateScrollProgress();
+        });
+      } else {
+        syncUserState();
+        updateScrollProgress();
+      }
+    </script>
+  </body>
+</html>

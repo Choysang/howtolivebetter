@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { getItems, getChapters } from '../lib/kb.ts'
+import BingoMatrixIsland from '../islands/BingoMatrixIsland.tsx'
+
+const allItems = getItems()
+const chapters = getChapters()
+const chapterMap = new Map(chapters.map((c) => [c.n, c.title]))
+
+// 严格选出所有零成本 (¥0) 的高杠杆小事
+const zeroCostItems = allItems
+  .filter((it) => it.source?.tags?.money === '0')
+  .map((it) => ({
+    uid: it.uid,
+    title: it.source.title,
+    category: chapterMap.get(it.source.chapter) || '生活实践',
+  }))
+
+// 初始 9 项
+const initialNine = zeroCostItems.slice(0, 9)
+---
+
+<BaseLayout
+  title="零元行动九宫格 · 高性价比人生指南"
+  description="全书精选零成本高杠杆生活小事，3x3 九宫格连线打卡，连通 8 条胜负线即可达成今日 Bingo，一键生成高清朋友圈海报。"
+>
+  <div class="py-10 sm:py-16 max-w-4xl mx-auto px-4 text-center space-y-4">
+    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#d5ed9e] text-[#12382d]">
+      <span>🎯 零元行动 Bingo</span>
+      <span>·</span>
+      <span>不花一分钱改变生活</span>
+    </div>
+
+    <h1 class="text-3xl sm:text-4xl font-serif font-bold text-gray-900 dark:text-white tracking-tight">
+      零元生活九宫格
+    </h1>
+
+    <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
+      最高性价比的行动永远是「零成本、高杠杆」。点击格子标记达成，连成任意横线、竖线或对角线触发 Bingo 祝捷，生成今日打卡分享卡！
+    </p>
+
+    <div class="pt-6">
+      <BingoMatrixIsland
+        client:load
+        initialItems={initialNine}
+        allPool={zeroCostItems}
+      />
+    </div>
+
+    <div class="pt-10 text-xs text-gray-400 dark:text-gray-500 max-w-md mx-auto">
+      全部状态保存在本地浏览器中，绝无隐私泄露。随时换一组探索更多 0 元科学习惯。
+    </div>
+  </div>
+</BaseLayout>
