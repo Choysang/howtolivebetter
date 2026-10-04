@@ -10,6 +10,7 @@
 [![Local--First Privacy](https://img.shields.io/badge/Privacy-100%25%20Local--First-10B981)](https://howtolivebetter.net)
 [![Tests Passing](https://img.shields.io/badge/Tests-96%2F96%20Pass-brightgreen)](ops/test/)
 [![Static Pages](https://img.shields.io/badge/Static%20Pages-717%20Pre--rendered-blue)](frontend/web/dist/)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Choysang/howtolivebetter)
 [![License](https://img.shields.io/badge/License-MIT%20%2F%20CC%20BY--NC%204.0-orange)](LICENSE)
 
 ---

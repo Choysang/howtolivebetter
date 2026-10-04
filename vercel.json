@@ -1,0 +1,5 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "frontend/web/dist",
+  "framework": null
+}

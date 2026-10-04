@@ -4,7 +4,8 @@ import tailwindcss from '@tailwindcss/vite'
 import path from 'node:path'
 
 export default defineConfig({
-  site: 'https://howtolivebetter.local',
+  site: process.env.ASTRO_SITE || 'https://howtolivebetter.local',
+  base: process.env.ASTRO_BASE || '/',
   integrations: [react()],
   vite: {
     plugins: [tailwindcss()],
